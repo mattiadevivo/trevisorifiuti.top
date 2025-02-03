@@ -57,21 +57,17 @@ def scrape(url: str):
     for table in tables:
         table = cast(Tag, table)
         comune = extract_comune_from_table(table)
-        if comune is not None:
-            print(f"Comune #{comune.zone}: {comune.name} ({comune.area})")
-        continue
-        # Find all rows in the table
-        rows = table.find_all("tr")
-        for row in rows[1:]:
-            cols = row.find_all("td")
-            if len(cols) > 0:
-                comune = cols[0].find("span", string=True).text.strip()
-                data = cols[1].find("span", string=True).text.strip()
-                svuotamenti = cols[2].find_all("span", string=True)
-                # Print each day's waste collection point
-                for i, svu in enumerate(svuotamenti):
-                    print(f"  {data}:")
-                    print(f"    {comune} ({svu.text.strip()})")
+        if comune is None:
+            continue
+        print(f"Comune #{comune.zone}: {comune.name} ({comune.area})")
+        svuotamenti_table = table.find("table", id=f"svuotamenti_{comune.zone}")
+        svuotamenti_rows = (
+            svuotamenti_table.find("tbody").children
+            if svuotamenti_table.find("tbody") is not None  # TODO: fix this
+            else []
+        )
+        for row in svuotamenti_rows:
+            print(row.getText(strip=True))
 
 
 scrape(url)
