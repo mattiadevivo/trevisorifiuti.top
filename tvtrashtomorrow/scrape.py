@@ -61,13 +61,14 @@ def scrape(url: str):
             continue
         print(f"Comune #{comune.zone}: {comune.name} ({comune.area})")
         svuotamenti_table = table.find("table", id=f"svuotamenti_{comune.zone}")
-        svuotamenti_rows = (
-            svuotamenti_table.find("tbody").children
-            if svuotamenti_table.find("tbody") is not None  # TODO: fix this
-            else []
-        )
+
+        svuotamenti_rows = svuotamenti_table.find_all("tr", recursive=False)
         for row in svuotamenti_rows:
-            print(row.getText(strip=True))
+            row = cast(Tag, row)
+            svuotamenti = row.find_all("td", recursive=False)
+            if svuotamenti:
+                text = " ".join([s.getText("&", strip=True) for s in svuotamenti])
+                print(text)
 
 
 scrape(url)
