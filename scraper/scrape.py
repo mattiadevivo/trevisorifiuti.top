@@ -3,9 +3,11 @@ from bs4 import BeautifulSoup, Tag, ResultSet
 from typing import List, cast
 from re import search
 
+from scraper.adapters import Adapters
 from scraper.config import Settings
 from scraper.entities.municipality import Municipality
 from scraper.entities.waste import CollectionSchedule, Waste
+from scraper.adapters import create as create_adapters
 
 
 def get_page_content(url) -> bytes:
@@ -72,7 +74,7 @@ def extract_collection_schedules(
     return collection_schedules
 
 
-def scrape(url: str):
+def scrape(adapters: Adapters, url: str):
     page_content = get_page_content(url)
     # Create a BeautifulSoup object and specify the parser
     soup = BeautifulSoup(page_content, "html.parser")
@@ -82,16 +84,18 @@ def scrape(url: str):
     )
     for table in tables:
         assert isinstance(table, Tag)
-        municipalities = extract_municipality_from_table(table)
-        if municipalities is None:
+        municipality = extract_municipality_from_table(table)
+        if municipality is None:
             continue
-        print(municipalities)
-        collection_schedules = extract_collection_schedules(table, municipalities)
+        adapters.supabase.insert_municipality(municipality)  # TODO: fix
+        print(municipality)
+        collection_schedules = extract_collection_schedules(table, municipality)
         print(collection_schedules)
 
 
 if __name__ == "__main__":
     settings = Settings()
-    print(settings.model_dump())
-    # Send a GET request to the webpage
-    scrape(settings.page_url)
+    adapters = create_adapters(
+        {"supabase": {"key": settings.supabase_key, "url": settings.supabase_url}}
+    )
+    scrape(adapters, settings.page_url)

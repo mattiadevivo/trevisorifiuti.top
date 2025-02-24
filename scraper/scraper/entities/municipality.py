@@ -4,8 +4,8 @@ from json import dumps
 class Municipality:
     def __init__(self, name: str, zone: str, area: str | None):
         self._name = name
-        self._area = area
         self._zone = zone
+        self._area = area
 
     def __str__(self):
         return dumps(self.__dict__)
