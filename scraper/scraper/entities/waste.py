@@ -4,13 +4,13 @@ Waste = Literal["Vegetale", "Secco", "Umido", "VPL", "Carta"]
 
 
 class CollectionSchedule:
-    def __init__(self, date: str, waste_list: List[Waste]) -> None:
+    def __init__(self, date: str, wastes: List[Waste]) -> None:
         self._date = date
-        self._waste_list = waste_list
+        self._wastes = wastes
 
     @property
     def date(self) -> str:
         return self._date
 
     def __str__(self):
-        return f"{self.date}: {self._waste_list}"
+        return f"{self.date}: {self._wastes}"
