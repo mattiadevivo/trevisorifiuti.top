@@ -14,4 +14,9 @@ class Supabase:
         self.client: Client = create_client(url, key)
 
     def insert_municipality(self, municipality: Municipality):
-        return self.client.table("municipalities").insert({}).execute()
+        return (
+            self.client.schema("tvtrash")
+            .table("municipalities")
+            .insert(municipality.__dict__)
+            .execute()
+        )

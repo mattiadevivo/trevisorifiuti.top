@@ -9,5 +9,5 @@ class Settings(BaseSettings):
         default="https://contarina.it/cittadino/raccolta-differenziata/eco-calendario",
         description="The page where scrape the data from",
     )
-    supabase_url: str
-    supabase_key: str
+    supabase_url: str = ""
+    supabase_key: str = ""

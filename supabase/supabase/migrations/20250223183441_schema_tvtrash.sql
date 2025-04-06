@@ -1,5 +1,14 @@
 CREATE SCHEMA IF NOT EXISTS tvtrash;
 
+/*Add permissions*/
+GRANT USAGE ON SCHEMA tvtrash TO anon, authenticated, service_role;
+GRANT ALL ON ALL TABLES IN SCHEMA tvtrash TO anon, authenticated, service_role;
+GRANT ALL ON ALL ROUTINES IN SCHEMA tvtrash TO anon, authenticated, service_role;
+GRANT ALL ON ALL SEQUENCES IN SCHEMA tvtrash TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA tvtrash GRANT ALL ON TABLES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA tvtrash GRANT ALL ON ROUTINES TO anon, authenticated, service_role;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA tvtrash GRANT ALL ON SEQUENCES TO anon, authenticated, service_role;
+
 CREATE TABLE IF NOT EXISTS tvtrash.municipalities
 (
     id UUID NOT NULL DEFAULT uuid_generate_v4(),
