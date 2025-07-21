@@ -1,4 +1,4 @@
-import json
+from datetime import datetime
 import httpx
 from bs4 import BeautifulSoup, Tag, ResultSet
 from typing import List, cast
@@ -6,7 +6,8 @@ from re import search
 
 from scraper.config import Settings
 from scraper.domains.waste.municipality import Municipality
-from scraper.entities.waste import CollectionSchedule, Waste
+from scraper.domains.waste.collection_schedule import CollectionSchedule, Waste
+
 from scraper.adapters import create as create_adapters
 from scraper.services import Services, create as create_services
 
@@ -47,9 +48,11 @@ def extract_municipality_from_table(table: Tag) -> Municipality | None:
 
 
 def extract_collection_schedules(
-    table: Tag, comune: Municipality
+    table: Tag, municipality: Municipality
 ) -> List[CollectionSchedule]:
-    collection_schedules_table = table.find("table", id=f"svuotamenti_{comune.zone}")
+    collection_schedules_table = table.find(
+        "table", id=f"svuotamenti_{municipality.zone}"
+    )
     assert isinstance(collection_schedules_table, Tag)
     collection_schedules_rows = collection_schedules_table.find_all(
         "tr", recursive=False
@@ -65,11 +68,12 @@ def extract_collection_schedules(
             (date, s) = text.split(" ", 1)
             collection_schedules.append(
                 CollectionSchedule(
-                    date,
-                    cast(
+                    date=datetime.strptime(date, "%d-%m-%Y").date(),
+                    waste=cast(
                         List[Waste],
                         s.split("&"),
                     ),
+                    municipality_id=municipality.id,
                 )
             )
     return collection_schedules
@@ -88,12 +92,11 @@ def scrape(services: Services, url: str):
         municipality = extract_municipality_from_table(table)
         if municipality is None:
             continue
-        services.municipality.create_municipality(
+        municipality = services.municipality.create(
             municipality.name, municipality.zone, municipality.area
         )
-        # print(municipality.model_dump_json())
         collection_schedules = extract_collection_schedules(table, municipality)
-        print(collection_schedules)
+        services.collection_schedule.create_many(collection_schedules)
 
 
 if __name__ == "__main__":
