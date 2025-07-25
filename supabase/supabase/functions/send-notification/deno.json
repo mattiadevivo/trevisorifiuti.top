@@ -1,6 +1,7 @@
 {
   "imports": {
     "@types/luxon": "npm:@types/luxon@^3.6.2",
+    "grammy": "npm:grammy@^1.37.0",
     "luxon": "npm:luxon@^3.7.1",
     "supabase": "npm:@supabase/supabase-js@2"
   },

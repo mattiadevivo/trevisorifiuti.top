@@ -92,12 +92,12 @@ BEGIN
   JOIN tvtrash.municipalities m ON wc.municipality_id = m.id
   JOIN tvtrash.notification_preferences np ON np.municipality_id = m.id
   JOIN tvtrash.notification_types nt ON nt.id = np.notification_type_id
-  WHERE wc.date = target_date;
+  WHERE wc.date = target_date AND array_length(wc.waste, 1) > 0;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 GRANT EXECUTE ON FUNCTION tvtrash.get_schedules_for_date(date) TO anon, authenticated, service_role;
 /* end functions */
 
 /* Data */
-INSERT INTO tvtrash.notification_types (name, info) VALUES ('telegram', '{"http-api-token": "7272497005:AAFDM2DJuT5sWVbqC098M1zefPqIzdKyZjE"}');
+-- INSERT INTO tvtrash.notification_types (name, info) VALUES ('telegram', '{"http-api-token": "7272497005:AAFDM2DJuT5sWVbqC098M1zefPqIzdKyZjE"}');

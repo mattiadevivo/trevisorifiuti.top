@@ -1,6 +1,6 @@
 {
   "name": "supabase",
-  "description": "Supabase local environment",
+  "description": "Project containing supabase functions, SQL migrations and utils",
   "scripts": {
     "start": "pnpm exec supabase start --debug",
     "start:db": "pnpm exec supabase db start",
@@ -9,6 +9,7 @@
     "migration:add": "pnpm exec supabase migration new schema",
     "migration:apply": "pnpm exec supabase db reset",
     "functions": "supabase functions serve",
+    "generate:typescript": "pnpm exec supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres > ./supabase/functions/database.types.ts",
     "ui": "open http://127.0.0.1:54323"
   },
   "devDependencies": {
