@@ -98,6 +98,3 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
 
 GRANT EXECUTE ON FUNCTION tvtrash.get_schedules_for_date(date) TO anon, authenticated, service_role;
 /* end functions */
-
-/* Data */
--- INSERT INTO tvtrash.notification_types (name, info) VALUES ('telegram', '{"http-api-token": "7272497005:AAFDM2DJuT5sWVbqC098M1zefPqIzdKyZjE"}');

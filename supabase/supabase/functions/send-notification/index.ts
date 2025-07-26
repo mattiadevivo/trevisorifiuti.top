@@ -4,98 +4,54 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient, SupabaseClient } from "jsr:@supabase/supabase-js@2";
 // @deno-types="npm:@types/luxon@^3.6.2"
 import { DateTime } from "npm:luxon@^3.7.1";
-import { Database } from "../database.types.ts";
 
-import { Bot } from "npm:grammy@^1.37.0";
-
-type GetSchedulesResult =
-  Database["tvtrash"]["Functions"]["get_schedules_for_date"]["Returns"];
-
-async function getSchedulesForDate(
-  supabase: SupabaseClient<Database>,
-  date: DateTime,
-) {
-  const { data, error } = await supabase.schema("tvtrash")
-    .rpc("get_schedules_for_date", {
-      target_date: `${date.year}-${date.month}-${date.day}`,
-    });
-  if (error) {
-    throw error;
-  }
-
-  return data;
-}
-
-function createMessage(
-  scheduleDate: string,
-  municipalityName: string,
-  wastes: string[],
-) {
-  return `Ciao 👋
-Domani <b>${scheduleDate}</b> a <b>${municipalityName}</b> verranno raccolti i seguenti rifiuti:
-<b>${wastes.join("\n")}</b>`;
-}
-
-const telegramBot = new Bot(
-  Deno.env.get("TELEGRAM_BOT_TOKEN") ??
-    "",
-);
-async function sendTelegramNotification(schedule: GetSchedulesResult[number]) {
-  const notificationInfo = schedule.notification_info as {
-    chat_id: string;
-  };
-
-  await telegramBot.api.sendMessage(
-    notificationInfo.chat_id,
-    createMessage(
-      schedule.collection_date,
-      schedule.municipality_name,
-      schedule.waste,
-    ),
-    { parse_mode: "HTML" },
-  );
-}
-
-async function sendNotification(notificationInfo: GetSchedulesResult[number]) {
-  switch (notificationInfo.notification_type_name) {
-    case "telegram":
-      await sendTelegramNotification(notificationInfo);
-      break;
-    default:
-      console.log(
-        `Unknown notification type: ${notificationInfo.notification_type_name}`,
-      );
-      break;
-  }
-}
+import { create as createConfig } from "./config.ts";
+import {
+  NotificationSenders,
+  sendNotification,
+} from "./notifications/index.ts";
+import {
+  create as createSupabase,
+  getSchedulesForDate,
+} from "./adapters/supabase.ts";
+import { create as createTelegram } from "./adapters/telegram.ts";
+import z from "npm:zod";
 
 Deno.serve(async (req: Request) => {
   let processedRows: number = 0;
   try {
-    const supabase = createClient<Database>(
-      Deno.env.get("SUPABASE_URL") ?? "http://127.0.0.1:54321",
-      Deno.env.get("SUPABASE_ANON_KEY") ??
-        "",
-      {
-        global: {
-          headers: { Authorization: req.headers.get("Authorization")! },
-        },
-      },
+    const config = createConfig();
+    const supabase = createSupabase(
+      config.supabase,
+      req.headers.get("Authorization")!,
     );
+    const telegramBot = createTelegram(config.telegram);
+
+    const notificationSenders: NotificationSenders = {
+      telegram: telegramBot,
+    };
     const tomorrow = DateTime.now().plus({ days: 1 });
     const schedules = await getSchedulesForDate(
       supabase,
       tomorrow,
     );
     for (const schedule of schedules) {
-      // send notification
-      await sendNotification(schedule);
+      await sendNotification(schedule, notificationSenders);
       processedRows++;
     }
   } catch (err) {
+    if (err instanceof z.ZodError) {
+      err.issues;
+      return new Response(
+        JSON.stringify({ message: err?.message ?? err, issues: err.issues }),
+        {
+          headers: { "Content-Type": "application/json" },
+          status: 422,
+        },
+      );
+    }
     return new Response(JSON.stringify({ message: err?.message ?? err }), {
       headers: { "Content-Type": "application/json" },
       status: 500,

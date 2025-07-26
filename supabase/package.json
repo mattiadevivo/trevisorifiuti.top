@@ -8,7 +8,7 @@
     "stop:db": "pnpm exec supabase db stop",
     "migration:add": "pnpm exec supabase migration new schema",
     "migration:apply": "pnpm exec supabase db reset",
-    "functions": "supabase functions serve",
+    "functions": "supabase functions serve --env-file .env.local",
     "generate:typescript": "pnpm exec supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres > ./supabase/functions/database.types.ts",
     "ui": "open http://127.0.0.1:54323"
   },
