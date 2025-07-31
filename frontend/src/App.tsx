@@ -3,11 +3,11 @@ import { createSignal, ErrorBoundary, JSX, type Component } from "solid-js";
 import { create as createConfig } from "./config";
 import { create as createSupabase } from "./supabase";
 import { Counter } from "./Counter";
+import { Navigation } from "@ui/Navbar";
+import { Municipalities } from "./municipalities/Municipalities";
 
 //const config = createConfig();
 //const supabase = createSupabase(config.supabase);
-
-type Props = { children: JSX.Element };
 
 const App: Component = (props) => {
   return (
@@ -19,7 +19,9 @@ const App: Component = (props) => {
         </div>
       )}
     >
+      <Navigation></Navigation>
       <Counter />
+      <Municipalities></Municipalities>
     </ErrorBoundary>
   );
 };

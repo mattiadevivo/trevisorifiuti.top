@@ -28,6 +28,7 @@
     "@solidjs/router": "^0.15.3",
     "@supabase/supabase-js": "^2.53.0",
     "class-variance-authority": "^0.7.1",
+    "lucide-solid": "^0.535.0",
     "solid-js": "^1.9.5",
     "zod": "^4.0.13"
   }
