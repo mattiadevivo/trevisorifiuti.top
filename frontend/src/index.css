@@ -1,1 +1,8 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-primary: var(--color-emerald-500);
+  --color-primary-hover: var(--color-emerald-600);
+  --color-secondary: var(--color-emerald-500);
+  --color-secondary-hover: var(--color-emerald-600);
+}

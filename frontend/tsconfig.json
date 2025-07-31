@@ -9,6 +9,9 @@
     "jsxImportSource": "solid-js",
     "types": ["vite/client", "@testing-library/jest-dom"],
     "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "paths": {
+      "@ui/*": ["./src/components/ui/*"]
+    }
   }
 }

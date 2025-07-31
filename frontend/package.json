@@ -24,8 +24,10 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@ark-ui/solid": "^5.18.2",
     "@solidjs/router": "^0.15.3",
     "@supabase/supabase-js": "^2.53.0",
+    "class-variance-authority": "^0.7.1",
     "solid-js": "^1.9.5",
     "zod": "^4.0.13"
   }
