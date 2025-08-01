@@ -1,14 +1,17 @@
 import { Button } from "@ui/button";
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, onMount } from "solid-js";
 
 export const Counter: Component = (props) => {
   const [count, setCount] = createSignal<number>(0);
+
   return (
     <>
-      <h1 class="text-3xl text-blue-700 text-center py-20">{count()}</h1>
+      <h1 class="text-base">{count()}</h1>
       <Button
         intent="secondary"
-        onClick={() => setCount((previous) => previous + 1)}
+        onClick={() => {
+          setCount((previous) => previous + 1);
+        }}
       >
         Increment
       </Button>

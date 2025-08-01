@@ -1,9 +1,12 @@
 import { createSignal } from "solid-js";
-import { supabase } from "./supabaseClient";
+import { create as createConfig } from "./config";
+import { create as createSupabase } from "./supabase";
 
 export default function Auth() {
   const [loading, setLoading] = createSignal(false);
   const [email, setEmail] = createSignal("");
+  const config = createConfig();
+  const supabase = createSupabase(config.supabase);
 
   const handleLogin = async (e: SubmitEvent) => {
     e.preventDefault();

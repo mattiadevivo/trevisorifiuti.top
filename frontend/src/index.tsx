@@ -5,7 +5,8 @@ import { render } from "solid-js/web";
 import { Route, Router } from "@solidjs/router";
 import App from "./App";
 import { NotFound } from "./NotFound";
-import { Municipalities } from "./municipalities/Municipalities";
+import { Municipalities } from "./municipalities/municipalities";
+import { Counter } from "./Counter";
 
 const root = document.getElementById("root");
 
@@ -15,11 +16,10 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-// <Router root={App}> // component that wraps every route
 render(
   () => (
-    <Router>
-      <Route path="/" component={App} />
+    <Router root={App}>
+      <Route path="/" component={Counter} />
       <Route path="/municipalities" component={Municipalities} />
       <Route path="*paramName" component={NotFound} />
     </Router>

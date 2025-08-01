@@ -1,28 +1,25 @@
-import { createSignal, ErrorBoundary, JSX, type Component } from "solid-js";
+import { ErrorBoundary, ParentProps, type Component } from "solid-js";
 
-import { create as createConfig } from "./config";
-import { create as createSupabase } from "./supabase";
-import { Counter } from "./Counter";
 import { Navbar } from "@ui/navbar";
-import { Municipalities } from "./municipalities/Municipalities";
+import { ThemeProvider } from "./context/theme";
 
-//const config = createConfig();
-//const supabase = createSupabase(config.supabase);
+interface Props extends ParentProps {}
 
-const App: Component = (props) => {
+const App: Component<Props> = (props) => {
   return (
-    <ErrorBoundary
-      fallback={(error, reset) => (
-        <div>
-          <p>Something went wrong: {error.message}</p>
-          <button onClick={reset}>Try Again</button>
-        </div>
-      )}
-    >
-      <Navbar></Navbar>
-      <Counter />
-      <Municipalities></Municipalities>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <ErrorBoundary
+        fallback={(error, reset) => (
+          <div>
+            <p>Something went wrong: {error.message}</p>
+            <button onClick={reset}>Try Again</button>
+          </div>
+        )}
+      >
+        <Navbar />
+        {props.children}
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 };
 

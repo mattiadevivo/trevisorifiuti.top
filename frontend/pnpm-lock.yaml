@@ -17,15 +17,15 @@ importers:
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
-      daisyui:
-        specifier: ^5.0.50
-        version: 5.0.50
       lucide-solid:
         specifier: ^0.535.0
         version: 0.535.0(solid-js@1.9.5)
       solid-js:
         specifier: ^1.9.5
         version: 1.9.5
+      theme-change:
+        specifier: ^2.5.0
+        version: 2.5.0
       zod:
         specifier: ^4.0.13
         version: 4.0.13
@@ -42,6 +42,9 @@ importers:
       '@testing-library/user-event':
         specifier: ^14.6.1
         version: 14.6.1(@testing-library/dom@10.4.1)
+      daisyui:
+        specifier: ^5.0.50
+        version: 5.0.50
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
@@ -1134,6 +1137,9 @@ packages:
   tapable@2.2.1:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
+
+  theme-change@2.5.0:
+    resolution: {integrity: sha512-B/UdsgdHAGhSKHTAQnxg/etN0RaMDpehuJmZIjLMDVJ6DGIliRHGD6pODi1CXLQAN9GV0GSyB3G6yCuK05PkPQ==}
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
@@ -2328,6 +2334,8 @@ snapshots:
   tailwindcss@4.0.7: {}
 
   tapable@2.2.1: {}
+
+  theme-change@2.5.0: {}
 
   tinybench@2.9.0: {}
 
