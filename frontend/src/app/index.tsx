@@ -7,6 +7,7 @@ import { App } from "./app";
 import { NotFound } from "./routes/notFound";
 import { Municipalities } from "../features/municipalities/components/municipalities";
 import { Counter } from "./counter";
+import { RootPage } from "./routes/root";
 
 const root = document.getElementById("root");
 
@@ -19,7 +20,7 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(
   () => (
     <Router root={App}>
-      <Route path="/" component={Counter} />
+      <Route path="/" component={RootPage} />
       <Route path="/municipalities" component={Municipalities} />
       <Route path="*paramName" component={NotFound} />
     </Router>

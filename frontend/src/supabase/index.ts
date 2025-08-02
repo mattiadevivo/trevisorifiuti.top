@@ -28,6 +28,7 @@ export async function getMunicipalities(client: Client) {
 
 export async function getCollectionSchedulesByMunicipality(
   client: Client,
+  municipalityId: Municipality["id"],
   limit: number,
   offset: number
 ) {
@@ -35,6 +36,7 @@ export async function getCollectionSchedulesByMunicipality(
     .schema("tvtrash")
     .from("waste_collections")
     .select()
-    .range(offset, offset + limit);
+    .eq("municipality_id", municipalityId)
+    .gte("date", new Date().toLocaleDateString("en-CA"));
   return data;
 }

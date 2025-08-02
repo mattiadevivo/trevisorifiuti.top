@@ -14,12 +14,14 @@ export const Navbar: Component<Navbar> = (props) => {
   return (
     <div class="navbar bg-base-100 shadow-sm">
       <div class="flex-1">
-        <a class="btn btn-ghost text-xl">TVTrash</a>
+        <A class="btn btn-ghost text-xl" href="/">
+          TVTrash
+        </A>
       </div>
       <div class="flex-none">
         <ul class="menu menu-horizontal px-1">
           <li>
-            <A href="/municipalities">Calendar</A>
+            <A href="/municipalities">Municipalities</A>
           </li>
           <label class="toggle text-base-content">
             <input

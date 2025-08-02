@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
+  "name": "tvtrash-frontend",
+  "version": "0.0.1",
+  "description": "Frontend application for TV Trash app",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -30,7 +30,6 @@
     "class-variance-authority": "^0.7.1",
     "lucide-solid": "^0.535.0",
     "solid-js": "^1.9.5",
-    "theme-change": "^2.5.0",
     "zod": "^4.0.13"
   }
 }
