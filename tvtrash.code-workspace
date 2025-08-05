@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "name": "frontend",
+      "path": "./frontend"
+    },
+    {
+      "name": "scraper",
+      "path": "./scraper"
+    },
+    {
+      "name": "supabase",
+      "path": "./supabase"
+    }
+  ]
+}

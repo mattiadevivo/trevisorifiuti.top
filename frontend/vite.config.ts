@@ -1,19 +1,19 @@
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import solidPlugin from "vite-plugin-solid";
 import path from "path";
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    TanStackRouterVite({
-      autoCodeSplitting: true,
-    }),
-    react(),
-  ],
+  plugins: [solidPlugin(), tailwindcss()],
+  server: {
+    port: 3000,
+  },
+  build: {
+    target: "esnext",
+  },
   resolve: {
     alias: {
-      src: path.resolve(__dirname, "./src"),
+      "@ui": path.resolve(__dirname, "./src/components/ui"),
     },
   },
 });
