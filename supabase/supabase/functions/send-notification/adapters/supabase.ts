@@ -23,10 +23,24 @@ export function create(
 export async function getSchedulesForDate(
     supabase: Client,
     date: DateTime,
+    user_id?: string,
 ) {
+    if (user_id) {
+        // If a user_id is provided, we call the RPC to get schedules for that user
+        const { data, error } = await supabase
+            .schema("tvtrash")
+            .rpc("get_schedule_for_user", {
+                target_date: date.toJSDate().toLocaleDateString("en-CA"),
+                target_user: user_id,
+            });
+        if (error) {
+            throw error;
+        }
+        return data;
+    }
     const { data, error } = await supabase.schema("tvtrash")
         .rpc("get_schedules_for_date", {
-            target_date: `${date.year}-${date.month}-${date.day}`,
+            target_date: date.toJSDate().toLocaleDateString("en-CA"),
         });
     if (error) {
         throw error;

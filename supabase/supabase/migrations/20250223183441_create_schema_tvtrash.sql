@@ -74,6 +74,8 @@ RETURNS TABLE (
     notification_type_info JSONB,
     notification_info JSONB
 )
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = ''
 AS $$
 BEGIN
   RETURN QUERY
@@ -94,7 +96,63 @@ BEGIN
   JOIN tvtrash.notification_types nt ON nt.id = np.notification_type_id
   WHERE wc.date = target_date AND array_length(wc.waste, 1) > 0;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = '';
-
+$$;
 GRANT EXECUTE ON FUNCTION tvtrash.get_schedules_for_date(date) TO anon, authenticated, service_role;
+
+CREATE or REPLACE FUNCTION tvtrash.get_schedule_for_user(target_date DATE, target_user UUID)
+RETURNS TABLE (
+    municipality_id UUID,
+    municipality_name VARCHAR,
+    area VARCHAR,
+    zone VARCHAR,
+    collection_date DATE,
+    waste VARCHAR[],
+    user_id UUID,
+    notification_type_name VARCHAR,
+    notification_type_info JSONB,
+    notification_info JSONB
+)
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = ''
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT * FROM tvtrash.get_schedules_for_date(target_date) notifications
+  WHERE notifications.user_id = target_user;
+END;
+$$ ;
+GRANT EXECUTE ON FUNCTION tvtrash.get_schedule_for_user(date, uuid) TO anon, authenticated, service_role;
 /* end functions */
+
+/* cron jobs */
+--select vault.create_secret('https://project-ref.supabase.co', 'project_url');
+--select vault.create_secret('YOUR_SUPABASE_ANON_KEY', 'anon_key');
+-- Send notification every day at 09:00
+-- This will trigger the function to send notifications for the next day
+SELECT
+  cron.schedule(
+    'send_collection_schedules_notification_every_day',
+    '0 9 * * SUN-THU', -- At 09:00 on every day-of-week from Sunday through Thursday.
+    $$
+    SELECT
+      net.http_post(
+          url:= (select decrypted_secret from vault.decrypted_secrets where name = 'project_url') || '/functions/v1/send-notification',
+          headers:=jsonb_build_object(
+            'Content-type', 'application/json',
+            'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'anon_key')
+          )
+      ) AS request_id;
+    $$
+);
+
+-- Cleanup old waste collections every Sunday at 09:00
+SELECT
+  cron.schedule(
+    'cleanup_old_waste_collections',
+    '0 9 * * SUN', -- At 09:00 on every Sunday 
+    $$
+    DELETE FROM tvtrash.waste_collections
+    WHERE date < (CURRENT_DATE - INTERVAL '7 days')
+    $$
+);
+/* end cron jobs */
