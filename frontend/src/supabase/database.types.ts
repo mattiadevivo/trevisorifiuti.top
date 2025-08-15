@@ -17,10 +17,10 @@ export type Database = {
     Functions: {
       graphql: {
         Args: {
-          variables?: Json
+          extensions?: Json
           operationName?: string
           query?: string
-          extensions?: Json
+          variables?: Json
         }
         Returns: Json
       }
@@ -172,19 +172,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_schedule_for_user: {
+        Args: { target_date: string; target_user: string }
+        Returns: {
+          area: string
+          collection_date: string
+          municipality_id: string
+          municipality_name: string
+          notification_info: Json
+          notification_type_info: Json
+          notification_type_name: string
+          user_id: string
+          waste: string[]
+          zone: string
+        }[]
+      }
       get_schedules_for_date: {
         Args: { target_date: string }
         Returns: {
-          user_id: string
+          area: string
+          collection_date: string
           municipality_id: string
           municipality_name: string
-          area: string
-          zone: string
-          collection_date: string
-          waste: string[]
-          notification_type_name: string
-          notification_type_info: Json
           notification_info: Json
+          notification_type_info: Json
+          notification_type_name: string
+          user_id: string
+          waste: string[]
+          zone: string
         }[]
       }
     }

@@ -17,10 +17,14 @@ import {
   getSchedulesForDate,
 } from "./adapters/supabase.ts";
 import { create as createTelegram } from "./adapters/telegram.ts";
-import z from "npm:zod";
+import { z } from "npm:zod";
 
+const RequestBodySchema = z.object({
+  user_id: z.uuid().optional(),
+});
 Deno.serve(async (req: Request) => {
-  let processedRows: number = 0;
+  let notificationsSent: number = 0;
+  const { user_id } = RequestBodySchema.parse(await req.json());
   try {
     const config = createConfig();
     const supabase = createSupabase(
@@ -36,14 +40,15 @@ Deno.serve(async (req: Request) => {
     const schedules = await getSchedulesForDate(
       supabase,
       tomorrow,
+      user_id,
     );
     for (const schedule of schedules) {
       await sendNotification(schedule, notificationSenders);
-      processedRows++;
+      notificationsSent++;
     }
   } catch (err) {
+    console.error(JSON.stringify(err));
     if (err instanceof z.ZodError) {
-      err.issues;
       return new Response(
         JSON.stringify({ message: err?.message ?? err, issues: err.issues }),
         {
@@ -60,7 +65,7 @@ Deno.serve(async (req: Request) => {
 
   return new Response(
     JSON.stringify({
-      processed_rows: processedRows,
+      notifications_sent: notificationsSent,
     }),
     {
       headers: { "Content-Type": "application/json" },

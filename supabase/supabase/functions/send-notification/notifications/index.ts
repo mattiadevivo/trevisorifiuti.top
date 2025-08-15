@@ -1,4 +1,4 @@
-import { GetSchedulesResult } from "./types.ts";
+import { GetSchedulesResult, TelegramNotificationInfo } from "./types.ts";
 import { TelegramBot } from "../adapters/telegram.ts";
 function createMessage(
     scheduleDate: string,
@@ -13,9 +13,8 @@ async function sendTelegramNotification(
     telegramBot: TelegramBot,
     schedule: GetSchedulesResult[number],
 ) {
-    const notificationInfo = schedule.notification_info as {
-        chat_id: string;
-    };
+    const notificationInfo = schedule
+        .notification_info as TelegramNotificationInfo;
 
     await telegramBot.api.sendMessage(
         notificationInfo.chat_id,
