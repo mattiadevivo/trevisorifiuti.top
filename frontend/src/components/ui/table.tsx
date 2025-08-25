@@ -13,7 +13,7 @@ export interface Props
 
 export const Table: ParentComponent<Props> = (props) => {
   return (
-    <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+    <div class="overflow-x-auto rounded-box border border-base-300 bg-base-100 shadow-xl">
       <table class={tableStyles()}>{props.children}</table>
     </div>
   );

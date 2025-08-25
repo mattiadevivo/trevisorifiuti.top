@@ -1,0 +1,486 @@
+// pages/AccountPage.tsx
+import { createSignal, createResource, Show, For } from "solid-js";
+import { useAuth } from "../../app/context/auth";
+
+// Mock municipalities - replace with your actual data source
+const mockMunicipalities = [
+  { id: "1", name: "Milano", region: "Lombardia" },
+  { id: "2", name: "Roma", region: "Lazio" },
+  { id: "3", name: "Napoli", region: "Campania" },
+  { id: "4", name: "Torino", region: "Piemonte" },
+  { id: "5", name: "Palermo", region: "Sicilia" },
+  { id: "6", name: "Genova", region: "Liguria" },
+  { id: "7", name: "Bologna", region: "Emilia-Romagna" },
+  { id: "8", name: "Firenze", region: "Toscana" },
+  { id: "9", name: "Catania", region: "Sicilia" },
+  { id: "10", name: "Venezia", region: "Veneto" },
+];
+
+interface UserProfile {
+  telegram_chat_id?: string;
+  municipality_id?: string;
+  municipality_name?: string;
+  notifications_enabled?: boolean;
+}
+
+export function AccountPage() {
+  const auth = useAuth();
+  const [telegramChatId, setTelegramChatId] = createSignal("");
+  const [selectedMunicipality, setSelectedMunicipality] = createSignal("");
+  const [isSubmitting, setIsSubmitting] = createSignal(false);
+  const [success, setSuccess] = createSignal("");
+  const [error, setError] = createSignal("");
+  const [showInstructions, setShowInstructions] = createSignal(false);
+
+  // Mock function to load user profile - replace with your actual API call
+  const [userProfile] = createResource<UserProfile>(async () => {
+    // This would be your actual API call
+    // const profile = await supabase.from('profiles').select('*').eq('user_id', auth.user()?.id).single()
+    // return profile.data
+    return {
+      telegram_chat_id: "",
+      municipality_id: "",
+      notifications_enabled: false,
+    };
+  });
+
+  // Initialize form with existing data
+  const initializeForm = () => {
+    const profile = userProfile();
+    if (profile) {
+      setTelegramChatId(profile.telegram_chat_id || "");
+      setSelectedMunicipality(profile.municipality_id || "");
+    }
+  };
+
+  const handleSubmit = async (e: Event) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setIsSubmitting(true);
+
+    try {
+      if (!telegramChatId().trim()) {
+        throw new Error("Please enter your Telegram Chat ID");
+      }
+
+      if (!selectedMunicipality()) {
+        throw new Error("Please select a municipality");
+      }
+
+      // Validate Chat ID format (should be a number)
+      if (!/^-?\d+$/.test(telegramChatId().trim())) {
+        throw new Error("Invalid Chat ID format. It should be a number.");
+      }
+
+      // Here you would make your API call to save the profile
+      /*
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: auth.user()?.id,
+          telegram_chat_id: telegramChatId().trim(),
+          municipality_id: selectedMunicipality(),
+          notifications_enabled: true,
+          updated_at: new Date().toISOString()
+        })
+      
+      if (error) throw error
+      */
+
+      setSuccess(
+        "Profile updated successfully! You will start receiving notifications soon."
+      );
+    } catch (err: any) {
+      setError(err.message || "An error occurred while saving your profile");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const testNotification = async () => {
+    if (!telegramChatId().trim()) {
+      setError("Please save your Chat ID first");
+      return;
+    }
+
+    try {
+      // Here you would make an API call to send a test message
+      /*
+      await fetch('/api/telegram/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: telegramChatId() })
+      })
+      */
+
+      setSuccess("Test notification sent! Check your Telegram.");
+    } catch (err) {
+      setError("Failed to send test notification");
+    }
+  };
+
+  return (
+    <div class="container mx-auto p-4 max-w-4xl">
+      <div class="breadcrumbs text-sm mb-6">
+        <ul>
+          <li>
+            <a href="/dashboard">Dashboard</a>
+          </li>
+          <li>Account Settings</li>
+        </ul>
+      </div>
+
+      <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        {/* Main Form */}
+        <div class="lg:col-span-2">
+          <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+              <h2 class="card-title mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  class="w-6 h-6 text-blue-500"
+                >
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                </svg>
+                Telegram Notifications
+              </h2>
+
+              <form onSubmit={handleSubmit} class="space-y-6">
+                {/* Municipality Selection */}
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">
+                      Municipality of Interest
+                    </span>
+                    <span class="label-text-alt text-error">*</span>
+                  </label>
+                  <select
+                    class="select select-bordered w-full"
+                    value={selectedMunicipality()}
+                    onChange={(e) =>
+                      setSelectedMunicipality(e.currentTarget.value)
+                    }
+                    required
+                    disabled={isSubmitting()}
+                  >
+                    <option value="">Select your municipality</option>
+                    <For each={mockMunicipalities}>
+                      {(municipality) => (
+                        <option value={municipality.id}>
+                          {municipality.name} ({municipality.region})
+                        </option>
+                      )}
+                    </For>
+                  </select>
+                  <div class="label">
+                    <span class="label-text-alt">
+                      You'll receive notifications for events in this
+                      municipality
+                    </span>
+                  </div>
+                </div>
+
+                {/* Telegram Chat ID */}
+                <div class="form-control">
+                  <label class="label">
+                    <span class="label-text font-semibold">
+                      Telegram Chat ID
+                    </span>
+                    <span class="label-text-alt text-error">*</span>
+                  </label>
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      placeholder="Enter your Chat ID (e.g., 123456789)"
+                      class="input input-bordered flex-1"
+                      value={telegramChatId()}
+                      onInput={(e) => setTelegramChatId(e.currentTarget.value)}
+                      required
+                      disabled={isSubmitting()}
+                    />
+                    <button
+                      type="button"
+                      class="btn btn-outline"
+                      onClick={() => setShowInstructions(!showInstructions())}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-4 h-4"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+                        />
+                      </svg>
+                      Help
+                    </button>
+                  </div>
+                  <div class="label">
+                    <span class="label-text-alt">
+                      Don't know your Chat ID? Click "Help" for instructions
+                    </span>
+                  </div>
+                </div>
+
+                {/* Error/Success Messages */}
+                <Show when={error()}>
+                  <div class="alert alert-error">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="stroke-current shrink-0 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>{error()}</span>
+                  </div>
+                </Show>
+
+                <Show when={success()}>
+                  <div class="alert alert-success">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="stroke-current shrink-0 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>{success()}</span>
+                  </div>
+                </Show>
+
+                {/* Action Buttons */}
+                <div class="card-actions justify-between">
+                  <button
+                    type="button"
+                    class="btn btn-outline"
+                    onClick={testNotification}
+                    disabled={isSubmitting() || !telegramChatId().trim()}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-4 h-4 mr-2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                      />
+                    </svg>
+                    Send Test Message
+                  </button>
+
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    disabled={isSubmitting()}
+                  >
+                    {isSubmitting() ? (
+                      <>
+                        <span class="loading loading-spinner loading-sm"></span>
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-4 h-4 mr-2"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M4.5 12.75l6 6 9-13.5"
+                          />
+                        </svg>
+                        Save Settings
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* Instructions Sidebar */}
+        <div class="lg:col-span-1">
+          <div
+            class={`card bg-base-100 shadow-xl transition-all duration-300 ${
+              showInstructions() ? "ring-2 ring-primary" : ""
+            }`}
+          >
+            <div class="card-body">
+              <h3 class="card-title text-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                  />
+                </svg>
+                How to Get Your Chat ID
+              </h3>
+
+              <div class="space-y-4 text-sm">
+                <div class="steps steps-vertical">
+                  <div class="step step-primary">
+                    <div class="text-left">
+                      <div class="font-semibold">Open Telegram</div>
+                      <div class="text-gray-600">
+                        Launch the Telegram app on your device
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="step step-primary">
+                    <div class="text-left">
+                      <div class="font-semibold">Find @userinfobot</div>
+                      <div class="text-gray-600">
+                        Search for and start a chat with @userinfobot
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="step step-primary">
+                    <div class="text-left">
+                      <div class="font-semibold">Send /start</div>
+                      <div class="text-gray-600">
+                        Type /start and send the message
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="step step-primary">
+                    <div class="text-left">
+                      <div class="font-semibold">Copy Your ID</div>
+                      <div class="text-gray-600">
+                        The bot will reply with your Chat ID. Copy the number.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="alert alert-info">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    class="stroke-current shrink-0 w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <div>
+                    <div class="font-semibold">Alternative Method</div>
+                    <p class="text-xs mt-1">
+                      You can also message @chatidbot and it will reply with
+                      your Chat ID.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="alert alert-warning">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="stroke-current shrink-0 w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
+                    />
+                  </svg>
+                  <div>
+                    <div class="font-semibold">Keep it Private</div>
+                    <p class="text-xs mt-1">
+                      Never share your Chat ID with untrusted sources.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Current Settings Summary */}
+          <div class="card bg-base-100 shadow-xl mt-6">
+            <div class="card-body">
+              <h3 class="card-title text-lg">Current Settings</h3>
+              <div class="space-y-2 text-sm">
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Status:</span>
+                  <div class="badge badge-outline">
+                    {telegramChatId() && selectedMunicipality()
+                      ? "Configured"
+                      : "Not Configured"}
+                  </div>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Municipality:</span>
+                  <span class="font-medium">
+                    {selectedMunicipality()
+                      ? mockMunicipalities.find(
+                          (m) => m.id === selectedMunicipality()
+                        )?.name || "Unknown"
+                      : "Not selected"}
+                  </span>
+                </div>
+                <div class="flex justify-between">
+                  <span class="text-gray-600">Chat ID:</span>
+                  <span class="font-mono text-xs">
+                    {telegramChatId()
+                      ? "***" + telegramChatId().slice(-4)
+                      : "Not set"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -6,7 +6,7 @@ import {
   onMount,
 } from "solid-js";
 
-type Theme = "emerald" | "halloween";
+type Theme = "light" | "dark";
 
 interface ThemeContextType {
   theme: () => Theme;
@@ -16,15 +16,12 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType>();
 
 export const ThemeProvider: ParentComponent = (props) => {
-  const [theme, setThemeSignal] = createSignal<Theme>("emerald");
+  const [theme, setThemeSignal] = createSignal<Theme>("light");
 
   // Initialize theme from localStorage or system preference
   onMount(() => {
     const savedTheme = localStorage.getItem("theme") as Theme;
-    if (
-      savedTheme &&
-      (savedTheme === "emerald" || savedTheme === "halloween")
-    ) {
+    if (savedTheme && (savedTheme === "light" || savedTheme === "dark")) {
       setThemeSignal(savedTheme);
       document.documentElement.setAttribute("data-theme", savedTheme);
     } else {
@@ -32,7 +29,7 @@ export const ThemeProvider: ParentComponent = (props) => {
       const prefersDark = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
-      const systemTheme = prefersDark ? "halloween" : "emerald";
+      const systemTheme = prefersDark ? "dark" : "light";
       setThemeSignal(systemTheme);
       document.documentElement.setAttribute("data-theme", systemTheme);
     }

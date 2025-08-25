@@ -80,7 +80,7 @@ RETURNS TABLE (
     notification_info JSONB
 )
 LANGUAGE plpgsql
-SECURITY DEFINER SET search_path = 'tvtrash'
+SECURITY DEFINER SET search_path = ''
 AS $$
 BEGIN
   RETURN QUERY
@@ -118,7 +118,7 @@ RETURNS TABLE (
     notification_info JSONB
 )
 LANGUAGE plpgsql
-SECURITY DEFINER SET search_path = 'tvtrash'
+SECURITY DEFINER SET search_path = ''
 AS $$
 BEGIN
   RETURN QUERY

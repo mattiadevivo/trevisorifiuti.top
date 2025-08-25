@@ -1,8 +1,9 @@
-import { type Component } from "solid-js";
+import { Show, type Component } from "solid-js";
 import { A } from "@solidjs/router";
 
-import { Calendar, Settings, LogOut, Trash2 } from "lucide-solid";
 import { useTheme } from "../../app/context/theme";
+import { useAuth } from "../../app/context/auth";
+import { UserMenu } from "../../features/auth/components/userMenu";
 
 interface Navbar {
   currentUser?: { name: string; email: string } | null;
@@ -10,28 +11,41 @@ interface Navbar {
 }
 
 export const Navbar: Component<Navbar> = (props) => {
+  const auth = useAuth();
   const { theme, setTheme } = useTheme();
   return (
-    <div class="navbar bg-base-100 shadow-sm">
+    <div class="navbar justify-between bg-base-100 text-base-content shadow-sm">
       <div class="flex-1">
         <A class="btn btn-ghost text-xl" href="/">
           TVTrash
         </A>
       </div>
-      <div class="flex-none">
+
+      <div class="flex items-center h-14 gap-2">
+        <A href="/" class="btn btn-primary btn-sm">
+          Calendario
+        </A>
+        <Show
+          when={auth.user()}
+          fallback={
+            <>
+              <A href="/auth" class="btn btn-accent btn-sm">
+                Log in
+              </A>
+            </>
+          }
+        >
+          <UserMenu />
+        </Show>
         <ul class="menu menu-horizontal px-1">
-          <li>
-            <A href="/municipalities">Municipalities</A>
-          </li>
-          <label class="toggle text-base-content">
+          <label class="toggle text-base-content justify-center">
             <input
               type="checkbox"
               value="synthwave"
               class="theme-controller"
-              checked={theme() === "halloween"}
+              checked={theme() === "dark"}
               onChange={() => {
-                const newTheme =
-                  theme() === "halloween" ? "emerald" : "halloween";
+                const newTheme = theme() === "dark" ? "light" : "dark";
                 setTheme(newTheme);
               }}
             />
@@ -74,19 +88,6 @@ export const Navbar: Component<Navbar> = (props) => {
               </g>
             </svg>
           </label>
-          <li>
-            <details>
-              <summary>Parent</summary>
-              <ul class="bg-base-100 rounded-t-none p-2">
-                <li>
-                  <a>Link 1</a>
-                </li>
-                <li>
-                  <a>Link 2</a>
-                </li>
-              </ul>
-            </details>
-          </li>
         </ul>
       </div>
     </div>

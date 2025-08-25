@@ -1,18 +1,7 @@
-import {
-  Component,
-  ComponentProps,
-  createResource,
-  For,
-  Match,
-  Show,
-  Switch,
-} from "solid-js";
+import { Component, createResource, For, Match, Show, Switch } from "solid-js";
 import { create as createConfig } from "../../../config";
-import {
-  create as createSupabase,
-  getMunicipalities,
-  Municipality,
-} from "../../../supabase";
+import { create as createSupabase, getMunicipalities } from "../../../supabase";
+import { Table } from "@ui/table";
 
 export const Municipalities: Component = () => {
   const config = createConfig();
@@ -31,13 +20,13 @@ export const Municipalities: Component = () => {
         </Match>
         <Match when={municipalities()}>
           <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-            <table class="table">
+            <Table>
               {/* head */}
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th>Comune</th>
                   <th>Area</th>
-                  <th>Zone</th>
+                  <th>Zona</th>
                 </tr>
               </thead>
               <tbody>
@@ -51,7 +40,7 @@ export const Municipalities: Component = () => {
                   )}
                 </For>
               </tbody>
-            </table>
+            </Table>
           </div>
         </Match>
       </Switch>

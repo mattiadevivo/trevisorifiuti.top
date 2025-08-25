@@ -2,7 +2,7 @@ import { Component } from "solid-js";
 
 export const Footer: Component = () => {
   return (
-    <footer class="footer sm:footer-horizontal bg-neutral text-neutral-content items-center p-4">
+    <footer class="footer sm:footer-horizontal bg-base-100 text-base-content items-center p-4">
       <aside class="grid-flow-col items-center">
         <svg
           width="36"

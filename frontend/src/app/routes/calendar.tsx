@@ -4,6 +4,7 @@ import {
   createResource,
   createSignal,
   For,
+  Show,
   Suspense,
 } from "solid-js";
 import { create as createConfig } from "../../config";
@@ -16,8 +17,11 @@ import {
 import { Select } from "@ui/select";
 import { Table } from "@ui/table";
 import { Spinner } from "@ui/spinner";
+import { A, useNavigate } from "@solidjs/router";
+import { TelegramNotificationBanner } from "../../features/calendar/components/telegramBanner";
 
 export const RootPage: Component = () => {
+  const navigate = useNavigate();
   const config = createConfig();
   const supabase = createSupabase(config.supabase);
 
@@ -38,6 +42,10 @@ export const RootPage: Component = () => {
     }
   );
 
+  const handleConfigureNotifications = () => {
+    navigate("/account");
+  };
+
   createEffect(() => {
     // Set the first municipality as default when none is selected
     if (municipalities() && municipalities().length > 0 && !municipalityId()) {
@@ -47,19 +55,37 @@ export const RootPage: Component = () => {
 
   return (
     <Suspense fallback={<Spinner />}>
-      <Select
-        value={municipalityId()}
-        onChange={(value) => setMunicipalityId(value)}
-      >
-        <For each={municipalities()}>
-          {(municipality) => (
-            <option value={municipality.id}>
-              {municipality.name}{" "}
-              {municipality.area ? `(${municipality.area})` : ""}
-            </option>
-          )}
-        </For>
-      </Select>
+      {/* Calendar Header */}
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h1 class="text-3xl font-bold">Calendario</h1>
+          <p class="opacity-60 mt-1">
+            Consulta il calendario della raccolta rifiuti del tuo comune
+          </p>
+        </div>
+        <div class="flex space-x-2">
+          <Select
+            variant="primary"
+            value={municipalityId()}
+            onChange={(value) => setMunicipalityId(value)}
+          >
+            <For each={municipalities()}>
+              {(municipality) => (
+                <option value={municipality.id}>
+                  {municipality.name}{" "}
+                  {municipality.area ? `(${municipality.area})` : ""}
+                </option>
+              )}
+            </For>
+          </Select>
+        </div>
+      </div>
+
+      {/* Telegram Notification Banner */}
+      <TelegramNotificationBanner
+        onConfigureClick={handleConfigureNotifications}
+      />
+
       <Table>
         <thead>
           <tr>
