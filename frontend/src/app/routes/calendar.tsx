@@ -4,7 +4,6 @@ import {
   createResource,
   createSignal,
   For,
-  Show,
   Suspense,
 } from "solid-js";
 import { create as createConfig } from "../../config";
@@ -17,7 +16,7 @@ import {
 import { Select } from "@ui/select";
 import { Table } from "@ui/table";
 import { Spinner } from "@ui/spinner";
-import { A, useNavigate } from "@solidjs/router";
+import { useNavigate } from "@solidjs/router";
 import { TelegramNotificationBanner } from "../../features/calendar/components/telegramBanner";
 
 export const RootPage: Component = () => {

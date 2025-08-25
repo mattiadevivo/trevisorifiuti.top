@@ -1,20 +1,12 @@
 // pages/AccountPage.tsx
 import { createSignal, createResource, Show, For } from "solid-js";
 import { useAuth } from "../../app/context/auth";
-
-// Mock municipalities - replace with your actual data source
-const mockMunicipalities = [
-  { id: "1", name: "Milano", region: "Lombardia" },
-  { id: "2", name: "Roma", region: "Lazio" },
-  { id: "3", name: "Napoli", region: "Campania" },
-  { id: "4", name: "Torino", region: "Piemonte" },
-  { id: "5", name: "Palermo", region: "Sicilia" },
-  { id: "6", name: "Genova", region: "Liguria" },
-  { id: "7", name: "Bologna", region: "Emilia-Romagna" },
-  { id: "8", name: "Firenze", region: "Toscana" },
-  { id: "9", name: "Catania", region: "Sicilia" },
-  { id: "10", name: "Venezia", region: "Veneto" },
-];
+import { create as createConfig } from "../../config";
+import {
+  create as createSupabase,
+  getMunicipalities,
+  Municipality,
+} from "../../supabase";
 
 interface UserProfile {
   telegram_chat_id?: string;
@@ -22,15 +14,25 @@ interface UserProfile {
   municipality_name?: string;
   notifications_enabled?: boolean;
 }
+// TODO: complete and tidy up
 
 export function AccountPage() {
+  const config = createConfig();
+  const supabase = createSupabase(config.supabase);
   const auth = useAuth();
+
   const [telegramChatId, setTelegramChatId] = createSignal("");
   const [selectedMunicipality, setSelectedMunicipality] = createSignal("");
+
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [success, setSuccess] = createSignal("");
   const [error, setError] = createSignal("");
   const [showInstructions, setShowInstructions] = createSignal(false);
+
+  const [municipalities] = createResource(supabase, getMunicipalities);
+  const [municipalityId, setMunicipalityId] = createSignal<
+    Municipality["id"] | null
+  >(municipalities()?.[0]?.id || null);
 
   // Mock function to load user profile - replace with your actual API call
   const [userProfile] = createResource<UserProfile>(async () => {
@@ -124,9 +126,7 @@ export function AccountPage() {
     <div class="container mx-auto p-4 max-w-4xl">
       <div class="breadcrumbs text-sm mb-6">
         <ul>
-          <li>
-            <a href="/dashboard">Dashboard</a>
-          </li>
+          <li>Profile</li>
           <li>Account Settings</li>
         </ul>
       </div>
@@ -169,10 +169,11 @@ export function AccountPage() {
                     disabled={isSubmitting()}
                   >
                     <option value="">Select your municipality</option>
-                    <For each={mockMunicipalities}>
+                    <For each={municipalities()}>
                       {(municipality) => (
                         <option value={municipality.id}>
-                          {municipality.name} ({municipality.region})
+                          {municipality.name}{" "}
+                          {municipality.area ? `(${municipality.area})` : ""}
                         </option>
                       )}
                     </For>
@@ -462,7 +463,7 @@ export function AccountPage() {
                   <span class="text-gray-600">Municipality:</span>
                   <span class="font-medium">
                     {selectedMunicipality()
-                      ? mockMunicipalities.find(
+                      ? municipalities().find(
                           (m) => m.id === selectedMunicipality()
                         )?.name || "Unknown"
                       : "Not selected"}

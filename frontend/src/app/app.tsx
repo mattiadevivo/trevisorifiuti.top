@@ -1,6 +1,6 @@
 import { ErrorBoundary, ParentProps, type Component } from "solid-js";
 
-import { Navbar } from "@ui/Navbar";
+import { Navbar } from "@ui/navbar";
 import { ThemeProvider } from "./context/theme";
 import { Footer } from "@ui/footer";
 import { AuthProvider } from "./context/auth";
