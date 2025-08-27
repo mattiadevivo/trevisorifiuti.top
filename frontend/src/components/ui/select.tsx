@@ -3,7 +3,8 @@ import { JSX, ParentComponent, ParentProps } from "solid-js";
 
 const selectStyles = cva("select", {
   variants: {
-    variant: {
+    intent: {
+      none: "",
       primary: "select-primary",
       secondary: "select-secondary",
       accent: "select-accent",
@@ -12,23 +13,28 @@ const selectStyles = cva("select", {
       warning: "select-warning",
       error: "select-error",
     },
-    size: {
+    sizeVariant: {
       xs: "select-xs",
       sm: "select-sm",
       md: "select-md",
       lg: "select-lg",
       xl: "select-xl",
     },
+    width: {
+      full: "w-full",
+      auto: "w-auto",
+    },
   },
   defaultVariants: {
-    size: "md",
-    variant: "primary",
+    sizeVariant: "md",
+    intent: "none",
+    width: "auto",
   },
 });
 
 export interface Props
   extends ParentProps,
-    JSX.ButtonHTMLAttributes<HTMLSelectElement>,
+    JSX.SelectHTMLAttributes<HTMLSelectElement>,
     VariantProps<typeof selectStyles> {
   onChange: (value: any) => void;
 }
@@ -36,9 +42,15 @@ export interface Props
 export const Select: ParentComponent<Props> = (props) => {
   return (
     <select
-      class={selectStyles({ variant: props.variant, size: props.size })}
+      class={selectStyles({
+        intent: props.intent,
+        sizeVariant: props.sizeVariant,
+        width: props.width,
+        class: props.class,
+      })}
+      required={props.required}
+      value={props.value}
       onChange={(e) => {
-        console.log(e.currentTarget.value);
         props.onChange(e.currentTarget.value);
       }}
     >

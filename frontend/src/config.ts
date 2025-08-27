@@ -6,7 +6,6 @@ const EnvSchema = z.object({
 });
 
 export function create() {
-  console.log(import.meta.env);
   const envSchema = EnvSchema.parse(import.meta.env);
 
   return {

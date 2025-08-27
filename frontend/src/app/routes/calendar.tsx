@@ -34,9 +34,7 @@ export const RootPage: Component = () => {
       if (!municipalityId) return [];
       return await getCollectionSchedulesByMunicipality(
         supabase,
-        municipalityId,
-        1000,
-        0
+        municipalityId
       );
     }
   );
@@ -65,7 +63,7 @@ export const RootPage: Component = () => {
         </div>
         <div class="flex space-x-2">
           <Select
-            variant="primary"
+            intent="primary"
             value={municipalityId()}
             onChange={(value) => setMunicipalityId(value)}
           >

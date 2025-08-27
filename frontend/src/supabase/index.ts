@@ -29,8 +29,8 @@ export async function getMunicipalities(client: Client) {
 export async function getCollectionSchedulesByMunicipality(
   client: Client,
   municipalityId: Municipality["id"],
-  limit: number,
-  offset: number
+  limit: number = 100,
+  offset: number = 0
 ) {
   const { data } = await client
     .schema("tvtrash")
@@ -38,6 +38,7 @@ export async function getCollectionSchedulesByMunicipality(
     .select()
     .eq("municipality_id", municipalityId)
     .gte("date", new Date().toLocaleDateString("en-CA"))
+    .range(offset, offset + limit - 1) // (zero-based, inclusive)
     .order("date", { ascending: true });
   return data;
 }
