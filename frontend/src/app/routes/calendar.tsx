@@ -59,7 +59,8 @@ export const RootPage: Component = () => {
         <div>
           <h1 class="text-3xl font-bold">Calendario</h1>
           <p class="opacity-60 mt-1">
-            Consulta il calendario della raccolta rifiuti del tuo comune
+            Consulta il calendario della raccolta rifiuti del tuo comune nella
+            provincia di Treviso
           </p>
         </div>
         <div class="flex space-x-2">

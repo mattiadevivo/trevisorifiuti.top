@@ -123,19 +123,18 @@ export function AccountPage() {
   };
 
   return (
-    <div class="container mx-auto p-4 max-w-4xl">
+    <div class="min-h-screen">
       <div class="breadcrumbs text-sm mb-6">
         <ul>
           <li>Profile</li>
-          <li>Account Settings</li>
+          <li>Notification Settings</li>
         </ul>
       </div>
 
-      <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
+      <h1 class="text-3xl font-bold mb-8">Notification Settings</h1>
 
-      <div class="grid gap-6 lg:grid-cols-3">
-        {/* Main Form */}
-        <div class="lg:col-span-2">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
           <div class="card bg-base-100 shadow-xl">
             <div class="card-body">
               <h2 class="card-title mb-4">
@@ -143,7 +142,7 @@ export function AccountPage() {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
                   viewBox="0 0 24 24"
-                  class="w-6 h-6 text-blue-500"
+                  class="size-6 text-blue-500"
                 >
                   <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
                 </svg>
@@ -178,12 +177,12 @@ export function AccountPage() {
                       )}
                     </For>
                   </select>
-                  <div class="label">
-                    <span class="label-text-alt">
+                  <label>
+                    <span class="text-sm text-base-content">
                       You'll receive notifications for events in this
                       municipality
                     </span>
-                  </div>
+                  </label>
                 </div>
 
                 {/* Telegram Chat ID */}
@@ -196,6 +195,7 @@ export function AccountPage() {
                   </label>
                   <div class="input-group">
                     <input
+                      id="telegram-chat-id"
                       type="text"
                       placeholder="Enter your Chat ID (e.g., 123456789)"
                       class="input input-bordered flex-1"
@@ -215,7 +215,7 @@ export function AccountPage() {
                         viewBox="0 0 24 24"
                         stroke-width="1.5"
                         stroke="currentColor"
-                        class="w-4 h-4"
+                        class="size-4"
                       >
                         <path
                           stroke-linecap="round"
@@ -226,11 +226,11 @@ export function AccountPage() {
                       Help
                     </button>
                   </div>
-                  <div class="label">
-                    <span class="label-text-alt">
+                  <label for="telegram-chat-id">
+                    <span class="text-sm text-base-content">
                       Don't know your Chat ID? Click "Help" for instructions
                     </span>
-                  </div>
+                  </label>
                 </div>
 
                 {/* Error/Success Messages */}
@@ -286,7 +286,7 @@ export function AccountPage() {
                       viewBox="0 0 24 24"
                       stroke-width="1.5"
                       stroke="currentColor"
-                      class="w-4 h-4 mr-2"
+                      class="size-4 mr-2"
                     >
                       <path
                         stroke-linecap="round"
@@ -315,7 +315,7 @@ export function AccountPage() {
                           viewBox="0 0 24 24"
                           stroke-width="1.5"
                           stroke="currentColor"
-                          class="w-4 h-4 mr-2"
+                          class="size-4 mr-2"
                         >
                           <path
                             stroke-linecap="round"
@@ -332,9 +332,7 @@ export function AccountPage() {
             </div>
           </div>
         </div>
-
-        {/* Instructions Sidebar */}
-        <div class="lg:col-span-1">
+        <div>
           <div
             class={`card bg-base-100 shadow-xl transition-all duration-300 ${
               showInstructions() ? "ring-2 ring-primary" : ""

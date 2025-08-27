@@ -1,5 +1,6 @@
 import { Show } from "solid-js";
 import { useAuth } from "../../../app/context/auth";
+import { A } from "@solidjs/router";
 
 export function UserMenu() {
   const auth = useAuth();
@@ -39,10 +40,7 @@ export function UserMenu() {
           class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
         >
           <li>
-            <div class="justify-between">Ricevi notifiche</div>
-          </li>
-          <li>
-            <a>Settings</a>
+            <A href="/account">Notification Settings</A>
           </li>
           <li>
             <button onClick={handleSignOut}>Logout</button>

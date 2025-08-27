@@ -1,6 +1,5 @@
 // components/TelegramNotificationBanner.tsx
 import { createSignal, Show } from "solid-js";
-import { useAuth } from "../../../app/context/auth";
 
 interface TelegramNotificationBannerProps {
   onConfigureClick?: () => void;
@@ -9,14 +8,6 @@ interface TelegramNotificationBannerProps {
 export function TelegramNotificationBanner(
   props: TelegramNotificationBannerProps
 ) {
-  const [isDismissed, setIsDismissed] = createSignal(false);
-  const auth = useAuth();
-
-  // Don't show if user is not logged in or banner is dismissed
-  if (!auth.user() || isDismissed()) {
-    return null;
-  }
-
   return (
     <div class="alert alert-info shadow-lg mb-6">
       <svg
@@ -73,11 +64,6 @@ export function TelegramNotificationBanner(
 // Enhanced version with more features
 export function TelegramNotificationCard() {
   const [isExpanded, setIsExpanded] = createSignal(false);
-  const auth = useAuth();
-
-  if (!auth.user()) {
-    return null;
-  }
 
   return (
     <div class="card bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 shadow-md">
