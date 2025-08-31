@@ -2,9 +2,12 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
 import path from "path";
+import devtools from "solid-devtools/vite"
 
 export default defineConfig({
-  plugins: [solidPlugin(), tailwindcss()],
+  plugins: [solidPlugin(), tailwindcss(), devtools({
+      autoname: true, // e.g. enable autoname
+    }),],
   server: {
     port: 3000,
   },

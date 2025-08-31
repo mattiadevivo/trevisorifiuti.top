@@ -2,7 +2,7 @@
   "name": "supabase",
   "description": "Project containing supabase functions, SQL migrations and utils",
   "scripts": {
-    "start": "pnpm exec supabase start --debug",
+    "start": "pnpm exec supabase start --debug -x vector",
     "start:db": "pnpm exec supabase db start",
     "stop": "pnpm exec supabase stop --no-backup",
     "stop:db": "pnpm exec supabase db stop",

@@ -40,3 +40,15 @@ export async function saveNotificationPreference(
     .upsert(preference);
   return data;
 }
+
+export async function deleteNotificationPreference(
+  client: Client,
+  userId: User["id"]
+) {
+  const { data } = await client
+    .schema("tvtrash")
+    .from("notification_preferences")
+    .delete()
+    .eq("user_id", userId);
+  return data;
+}
