@@ -5,10 +5,13 @@ import { Municipalities } from "../../features/municipalities/components/municip
 export const MunicipalitiesPage: Component = () => {
   return (
     <Suspense fallback={<Spinner />}>
-      <p class="py-6">
-        Questa è la lista completa dei comuni supportati da TVTrash.
-      </p>
-      <Municipalities />
+      <div>
+        <h1 class="text-3xl font-bold">Municipalities</h1>
+        <p class="opacity-60 mt-1 mb-3">
+          List of municipalities supported by TVTrash
+        </p>
+      </div>
+      <Municipalities/>
     </Suspense>
   );
 };

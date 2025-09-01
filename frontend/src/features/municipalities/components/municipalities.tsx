@@ -24,9 +24,9 @@ export const Municipalities: Component = () => {
               {/* head */}
               <thead>
                 <tr>
-                  <th>Comune</th>
+                  <th>Municipality</th>
                   <th>Area</th>
-                  <th>Zona</th>
+                  <th>Zone</th>
                 </tr>
               </thead>
               <tbody>

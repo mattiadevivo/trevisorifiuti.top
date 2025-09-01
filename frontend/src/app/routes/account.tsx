@@ -17,6 +17,7 @@ import {
 } from "../../supabase";
 import { Select } from "@ui/select";
 import {
+  deleteNotificationPreference,
   getNotificationPreferenceByUserId,
   getTelegramNotificationTypeId,
   NotificationPreference,
@@ -24,119 +25,120 @@ import {
 } from "../../supabase/account";
 import { TelegramNotificationInfo } from "../../features/account/schemas/notification";
 import { Spinner } from "@ui/spinner";
+import { Button } from "@ui/Button";
+import { set } from "zod";
 
 // --- Instructions Card ---
 const InstructionsCard: Component<{ show: boolean }> = (props) => (
-            <div
-              class={`card bg-base-100 shadow-xl transition-all duration-300 ${
-                props.show ? "ring-2 ring-primary" : ""
-              }`}
-            >
-              <div class="card-body">
-                <h3 class="card-title text-lg">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-5 h-5"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                    />
-                  </svg>
-                  How to Get Your Chat ID
-                </h3>
+  <div
+    class={`card bg-base-100 shadow-xl transition-all duration-300 ${props.show ? "ring-2 ring-primary" : ""
+      }`}
+  >
+    <div class="card-body">
+      <h3 class="card-title text-lg">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-5 h-5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+          />
+        </svg>
+        How to Get Your Chat ID
+      </h3>
 
-                <div class="space-y-4 text-sm">
-                  <div class="steps steps-vertical">
-                    <div class="step step-primary">
-                      <div class="text-left">
-                        <div class="font-semibold">Open Telegram</div>
-                        <div class="text-gray-600">
-                          Launch the Telegram app on your device
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="step step-primary">
-                      <div class="text-left">
-                        <div class="font-semibold">Find @userinfobot</div>
-                        <div class="text-gray-600">
-                          Search for and start a chat with @userinfobot
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="step step-primary">
-                      <div class="text-left">
-                        <div class="font-semibold">Send /start</div>
-                        <div class="text-gray-600">
-                          Type /start and send the message
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="step step-primary">
-                      <div class="text-left">
-                        <div class="font-semibold">Copy Your ID</div>
-                        <div class="text-gray-600">
-                          The bot will reply with your Chat ID. Copy the number.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="alert alert-info">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      class="stroke-current shrink-0 w-6 h-6"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      ></path>
-                    </svg>
-                    <div>
-                      <div class="font-semibold">Alternative Method</div>
-                      <p class="text-xs mt-1">
-                        You can also message @chatidbot and it will reply with
-                        your Chat ID.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div class="alert alert-warning">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="stroke-current shrink-0 w-6 h-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
-                      />
-                    </svg>
-                    <div>
-                      <div class="font-semibold">Keep it Private</div>
-                      <p class="text-xs mt-1">
-                        Never share your Chat ID with untrusted sources.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+      <div class="space-y-4 text-sm">
+        <div class="steps steps-vertical">
+          <div class="step step-primary">
+            <div class="text-left">
+              <div class="font-semibold">Open Telegram</div>
+              <div class="text-gray-600">
+                Launch the Telegram app on your device
               </div>
             </div>
+          </div>
+
+          <div class="step step-primary">
+            <div class="text-left">
+              <div class="font-semibold">Find @userinfobot</div>
+              <div class="text-gray-600">
+                Search for and start a chat with @userinfobot
+              </div>
+            </div>
+          </div>
+
+          <div class="step step-primary">
+            <div class="text-left">
+              <div class="font-semibold">Send /start</div>
+              <div class="text-gray-600">
+                Type /start and send the message
+              </div>
+            </div>
+          </div>
+
+          <div class="step step-primary">
+            <div class="text-left">
+              <div class="font-semibold">Copy Your ID</div>
+              <div class="text-gray-600">
+                The bot will reply with your Chat ID. Copy the number.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="stroke-current shrink-0 w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <div>
+            <div class="font-semibold">Alternative Method</div>
+            <p class="text-xs mt-1">
+              You can also message @chatidbot and it will reply with
+              your Chat ID.
+            </p>
+          </div>
+        </div>
+
+        <div class="alert alert-warning">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current shrink-0 w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"
+            />
+          </svg>
+          <div>
+            <div class="font-semibold">Keep it Private</div>
+            <p class="text-xs mt-1">
+              Never share your Chat ID with untrusted sources.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 );
 
 // --- Current Settings Card ---
@@ -144,6 +146,7 @@ const CurrentSettingsCard: Component<{
   isConfigured: boolean;
   notificationPreference: NotificationPreference | null | undefined;
   municipalities: Municipality[] | undefined;
+  onDelete: () => void;
 }> = (props) => (
   <div class="card bg-base-100 shadow-xl mt-6">
     <div class="card-body">
@@ -160,8 +163,8 @@ const CurrentSettingsCard: Component<{
           <span class="font-medium">
             {props.isConfigured && props.notificationPreference?.municipality_id && props.municipalities
               ? props.municipalities.find(
-                  (m) => m.id === props.notificationPreference?.municipality_id
-                )?.name
+                (m) => m.id === props.notificationPreference?.municipality_id
+              )?.name
               : "Not set"}
           </span>
         </div>
@@ -170,10 +173,18 @@ const CurrentSettingsCard: Component<{
           <span class="font-mono text-xs">
             {props.isConfigured && props.notificationPreference?.notification_info
               ? "***" +
-                ((props.notificationPreference.notification_info as TelegramNotificationInfo).chat_id ?? "").slice(-4)
+              ((props.notificationPreference.notification_info as TelegramNotificationInfo).chat_id ?? "").slice(-4)
               : "Not set"}
           </span>
         </div>
+        <Show when={props.isConfigured}>
+          <Button
+            intent="danger"
+            onClick={props.onDelete}
+          >
+            Delete Notification Preference
+          </Button>
+        </Show>
       </div>
     </div>
   </div>
@@ -194,6 +205,9 @@ export function AccountPage() {
       return null;
     }
   );
+  // Modal state
+  const [showDeleteModal, setShowDeleteModal] = createSignal(false);
+  const [isDeleting, setIsDeleting] = createSignal(false);
 
   // Form state
   const [telegramChatId, setTelegramChatId] = createSignal("");
@@ -262,6 +276,26 @@ export function AccountPage() {
     }
   };
 
+  // Delete notificationPreference handler
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    setError("");
+    setSuccess("");
+    try {
+      await deleteNotificationPreference(supabase, auth.user().id);
+      refetchNotificationPreference();
+      setSuccess("Notification preference deleted. You will no longer receive notifications.");
+      setShowDeleteModal(false);
+    } catch (err: any) {
+      setError(err.message || "Failed to delete notification preference.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  let modal!: HTMLDialogElement;
+
+
   return (
     <Suspense fallback={<Spinner />}>
       <div class="min-h-screen">
@@ -309,7 +343,7 @@ export function AccountPage() {
                       </Select>
                     </Show>
                     <Show when={!municipalities()}>
-                      <Select width="full" disabled onChange={() => {}}>
+                      <Select width="full" disabled onChange={() => { }}>
                         <option>Loading...</option>
                       </Select>
                     </Show>
@@ -413,10 +447,45 @@ export function AccountPage() {
               isConfigured={!!isNotificationPreferenceConfigured()}
               notificationPreference={notificationPreference()}
               municipalities={municipalities()}
+              onDelete={() => {
+                setShowDeleteModal(true)
+              }}
             />
           </div>
         </div>
+        {/* Delete Confirmation Modal */}
+        <Show when={showDeleteModal()}>
+          <dialog ref={modal} class="modal modal-open">
+            <div class="modal-box">
+              <h3 class="text-lg font-bold">Delete Notification Preference?</h3>
+              <p class="py-4">Are you sure you want to delete your notification preference? You will no longer receive notifications.</p>
+              <div class="modal-action">
+                <Button
+                  intent="primary"
+                  onClick={() => setShowDeleteModal(false)}
+                  disabled={isDeleting()}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  intent="danger"
+                  onClick={handleDelete}
+                  disabled={isDeleting()}
+                >
+                  {isDeleting() ? (
+                    <Spinner/>
+                  ) : (
+                    "Delete"
+                  )}
+                </Button>
+              </div>
+            </div>
+          </dialog>
+
+        </Show>
+
       </div>
+
     </Suspense>
   );
 }

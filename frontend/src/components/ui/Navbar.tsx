@@ -37,7 +37,7 @@ export const Navbar: Component<Navbar> = (props) => {
 
       <div class="flex items-center h-14 gap-2">
         <A href="/" class="btn btn-primary btn-sm">
-          Calendario
+          Calendar
         </A>
         <Show
           when={auth.user()}

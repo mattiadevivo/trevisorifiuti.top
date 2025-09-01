@@ -55,10 +55,10 @@ export const RootPage: Component = () => {
       {/* Calendar Header */}
       <div class="flex justify-between items-center mb-6">
         <div>
-          <h1 class="text-3xl font-bold">Calendario</h1>
+          <h1 class="text-3xl font-bold">Calendar</h1>
           <p class="opacity-60 mt-1">
-            Consulta il calendario della raccolta rifiuti del tuo comune nella
-            provincia di Treviso
+            Check the waste collection calendar for your municipality in the
+            province of Treviso
           </p>
         </div>
         <div class="flex space-x-2">
@@ -87,8 +87,8 @@ export const RootPage: Component = () => {
       <Table>
         <thead>
           <tr>
-            <th>Data</th>
-            <th>Rifiuti</th>
+            <th>Date</th>
+            <th>Waste</th>
           </tr>
         </thead>
         <tbody>
