@@ -9,14 +9,13 @@ import {
 import { User } from "@supabase/supabase-js";
 import { create as createConfig } from "../../config";
 import { create as createSupabase } from "../../supabase";
+import { useNavigate } from "@solidjs/router";
 
 interface AuthContextType {
   user: () => User | null;
   loading: () => boolean;
-  signUp: (email: string, password: string) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
+  signInWithMagicLink: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>();
@@ -27,6 +26,9 @@ const supabase = createSupabase(config.supabase);
 export const AuthProvider: ParentComponent = (props) => {
   const [user, setUser] = createSignal<User | null>(null);
   const [loading, setLoading] = createSignal(true);
+  const navigate = useNavigate();
+
+  const redirectPage = "/";
 
   // Initialize auth state
   onMount(async () => {
@@ -55,36 +57,24 @@ export const AuthProvider: ParentComponent = (props) => {
     });
   });
 
-  const signUp = async (email: string, password: string) => {
+  const signInWithMagicLink = async (email: string) => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email: email,
+        options: {
+          // set this to false if you do not want the user to be automatically signed up
+          shouldCreateUser: true,
+          emailRedirectTo: config.login.rediectUrl,
+        },
       });
 
       if (error) throw error;
 
       // If email confirmation is required, show message
       if (data.user && !data.session) {
-        throw new Error("Please check your email to confirm your account");
+        throw new Error("Please check your email to log in!");
       }
-    } catch (error) {
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const signIn = async (email: string, password: string) => {
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
     } catch (error) {
       throw error;
     } finally {
@@ -101,27 +91,15 @@ export const AuthProvider: ParentComponent = (props) => {
       throw error;
     } finally {
       setLoading(false);
-    }
-  };
-
-  const resetPassword = async (email: string) => {
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
-      if (error) throw error;
-    } catch (error) {
-      throw error;
+      navigate(redirectPage);
     }
   };
 
   const value = {
     user,
     loading,
-    signUp,
-    signIn,
+    signInWithMagicLink,
     signOut,
-    resetPassword,
   };
 
   return (

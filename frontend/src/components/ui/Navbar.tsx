@@ -44,7 +44,7 @@ export const Navbar: Component<Navbar> = (props) => {
           fallback={
             <>
               <A href="/auth" class="btn btn-accent btn-sm">
-                Log in
+                Sign in
               </A>
             </>
           }

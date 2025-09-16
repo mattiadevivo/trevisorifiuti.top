@@ -1,15 +1,9 @@
-import { createSignal, Show } from "solid-js";
-import {
-  LoginForm,
-  SignupForm,
-} from "../../features/auth/components/loginForm";
+import { SignInForm } from "../../features/auth/components/signInForm";
 import { useAuth } from "../context/auth";
 import { useNavigate } from "@solidjs/router";
 
 export function AuthPage() {
   const redirectPage = "/";
-
-  const [isLoggedIn, setIsLoggedIn] = createSignal<boolean>(true);
 
   const auth = useAuth();
   const navigate = useNavigate();
@@ -26,20 +20,7 @@ export function AuthPage() {
 
   return (
     <div class="min-h-screen max-w-screen flex items-center justify-center p-4">
-      <Show
-        when={isLoggedIn()}
-        fallback={
-          <SignupForm
-            onSuccess={handleAuthSuccess}
-            onSwitchToSignup={() => setIsLoggedIn(true)}
-          />
-        }
-      >
-        <LoginForm
-          onSuccess={handleAuthSuccess}
-          onSwitchToSignup={() => setIsLoggedIn(false)}
-        />
-      </Show>
+      <SignInForm onSuccess={handleAuthSuccess} />
     </div>
   );
 }

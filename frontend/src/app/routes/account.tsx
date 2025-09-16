@@ -25,14 +25,15 @@ import {
 } from "../../supabase/account";
 import { TelegramNotificationInfo } from "../../features/account/schemas/notification";
 import { Spinner } from "@ui/spinner";
-import { Button } from "@ui/Button";
+import { Button } from "@ui/button";
 import { set } from "zod";
 
 // --- Instructions Card ---
 const InstructionsCard: Component<{ show: boolean }> = (props) => (
   <div
-    class={`card bg-base-100 shadow-xl transition-all duration-300 ${props.show ? "ring-2 ring-primary" : ""
-      }`}
+    class={`card bg-base-100 shadow-xl transition-all duration-300 ${
+      props.show ? "ring-2 ring-primary" : ""
+    }`}
   >
     <div class="card-body">
       <h3 class="card-title text-lg">
@@ -76,9 +77,7 @@ const InstructionsCard: Component<{ show: boolean }> = (props) => (
           <div class="step step-primary">
             <div class="text-left">
               <div class="font-semibold">Send /start</div>
-              <div class="text-gray-600">
-                Type /start and send the message
-              </div>
+              <div class="text-gray-600">Type /start and send the message</div>
             </div>
           </div>
 
@@ -109,8 +108,8 @@ const InstructionsCard: Component<{ show: boolean }> = (props) => (
           <div>
             <div class="font-semibold">Alternative Method</div>
             <p class="text-xs mt-1">
-              You can also message @chatidbot and it will reply with
-              your Chat ID.
+              You can also message @chatidbot and it will reply with your Chat
+              ID.
             </p>
           </div>
         </div>
@@ -161,27 +160,32 @@ const CurrentSettingsCard: Component<{
         <div class="flex justify-between">
           <span class="text-gray-600">Municipality:</span>
           <span class="font-medium">
-            {props.isConfigured && props.notificationPreference?.municipality_id && props.municipalities
+            {props.isConfigured &&
+            props.notificationPreference?.municipality_id &&
+            props.municipalities
               ? props.municipalities.find(
-                (m) => m.id === props.notificationPreference?.municipality_id
-              )?.name
+                  (m) => m.id === props.notificationPreference?.municipality_id
+                )?.name
               : "Not set"}
           </span>
         </div>
         <div class="flex justify-between">
           <span class="text-gray-600">Chat ID:</span>
           <span class="font-mono text-xs">
-            {props.isConfigured && props.notificationPreference?.notification_info
+            {props.isConfigured &&
+            props.notificationPreference?.notification_info
               ? "***" +
-              ((props.notificationPreference.notification_info as TelegramNotificationInfo).chat_id ?? "").slice(-4)
+                (
+                  (
+                    props.notificationPreference
+                      .notification_info as TelegramNotificationInfo
+                  ).chat_id ?? ""
+                ).slice(-4)
               : "Not set"}
           </span>
         </div>
         <Show when={props.isConfigured}>
-          <Button
-            intent="danger"
-            onClick={props.onDelete}
-          >
+          <Button intent="danger" onClick={props.onDelete}>
             Delete Notification Preference
           </Button>
         </Show>
@@ -196,39 +200,50 @@ export function AccountPage() {
   const auth = useAuth();
 
   const [municipalities] = createResource(supabase, getMunicipalities);
-  const [telegramNotificationType] = createResource(supabase, getTelegramNotificationTypeId);
-  const [notificationPreference, { refetch: refetchNotificationPreference }] = createResource<NotificationPreference>(
-    async () => {
+  const [telegramNotificationType] = createResource(
+    supabase,
+    getTelegramNotificationTypeId
+  );
+  const [notificationPreference, { refetch: refetchNotificationPreference }] =
+    createResource<NotificationPreference>(async () => {
       if (auth.user()) {
-        return await getNotificationPreferenceByUserId(supabase, auth.user().id);
+        return await getNotificationPreferenceByUserId(
+          supabase,
+          auth.user().id
+        );
       }
       return null;
-    }
-  );
+    });
   // Modal state
   const [showDeleteModal, setShowDeleteModal] = createSignal(false);
   const [isDeleting, setIsDeleting] = createSignal(false);
 
   // Form state
   const [telegramChatId, setTelegramChatId] = createSignal("");
-  const [selectedMunicipality, setSelectedMunicipality] = createSignal<Municipality["id"] | null>(null);
+  const [selectedMunicipality, setSelectedMunicipality] = createSignal<
+    Municipality["id"] | null
+  >(null);
   const [isSubmitting, setIsSubmitting] = createSignal(false);
   const [success, setSuccess] = createSignal("");
   const [error, setError] = createSignal("");
   const [showInstructions, setShowInstructions] = createSignal(false);
 
   // Memo for config status
-  const isNotificationPreferenceConfigured = createMemo(() =>
-    notificationPreference() &&
-    notificationPreference()!.municipality_id &&
-    (notificationPreference()!.notification_info as TelegramNotificationInfo).chat_id
+  const isNotificationPreferenceConfigured = createMemo(
+    () =>
+      notificationPreference() &&
+      notificationPreference()!.municipality_id &&
+      (notificationPreference()!.notification_info as TelegramNotificationInfo)
+        .chat_id
   );
 
   // Populate form from resource
   createEffect(() => {
     const pref = notificationPreference();
     if (pref) {
-      setTelegramChatId((pref.notification_info as TelegramNotificationInfo).chat_id);
+      setTelegramChatId(
+        (pref.notification_info as TelegramNotificationInfo).chat_id
+      );
       setSelectedMunicipality(pref.municipality_id);
     }
   });
@@ -241,20 +256,28 @@ export function AccountPage() {
     setIsSubmitting(true);
 
     try {
-      if (!telegramChatId().trim()) throw new Error("Please enter your Telegram Chat ID");
-      if (!telegramNotificationType()) throw new Error("Telegram notification type not found");
-      if (!selectedMunicipality()) throw new Error("Please select a municipality");
-      if (!/^-?\d+$/.test(telegramChatId().trim())) throw new Error("Invalid Chat ID format. It should be a number.");
+      if (!telegramChatId().trim())
+        throw new Error("Please enter your Telegram Chat ID");
+      if (!telegramNotificationType())
+        throw new Error("Telegram notification type not found");
+      if (!selectedMunicipality())
+        throw new Error("Please select a municipality");
+      if (!/^-?\d+$/.test(telegramChatId().trim()))
+        throw new Error("Invalid Chat ID format. It should be a number.");
 
       await saveNotificationPreference(supabase, {
         municipality_id: selectedMunicipality(),
         user_id: auth.user().id,
-        notification_info: { chat_id: telegramChatId().trim() } satisfies TelegramNotificationInfo,
+        notification_info: {
+          chat_id: telegramChatId().trim(),
+        } satisfies TelegramNotificationInfo,
         notification_type_id: telegramNotificationType().id,
       });
 
       refetchNotificationPreference();
-      setSuccess("Profile updated successfully! You will start receiving notifications soon.");
+      setSuccess(
+        "Profile updated successfully! You will start receiving notifications soon."
+      );
     } catch (err: any) {
       setError(err.message || "An error occurred while saving your profile");
     } finally {
@@ -284,7 +307,9 @@ export function AccountPage() {
     try {
       await deleteNotificationPreference(supabase, auth.user().id);
       refetchNotificationPreference();
-      setSuccess("Notification preference deleted. You will no longer receive notifications.");
+      setSuccess(
+        "Notification preference deleted. You will no longer receive notifications."
+      );
       setShowDeleteModal(false);
     } catch (err: any) {
       setError(err.message || "Failed to delete notification preference.");
@@ -294,7 +319,6 @@ export function AccountPage() {
   };
 
   let modal!: HTMLDialogElement;
-
 
   return (
     <Suspense fallback={<Spinner />}>
@@ -311,7 +335,12 @@ export function AccountPage() {
             <div class="card bg-base-100 shadow-xl">
               <div class="card-body">
                 <h2 class="card-title mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="size-6 text-blue-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    class="size-6 text-blue-500"
+                  >
                     <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
                   </svg>
                   Telegram Notifications
@@ -320,7 +349,9 @@ export function AccountPage() {
                   {/* Municipality Selection */}
                   <div>
                     <label class="label">
-                      <span class="label-text font-semibold">Municipality of Interest</span>
+                      <span class="label-text font-semibold">
+                        Municipality of Interest
+                      </span>
                       <span class="label-text-alt text-error">*</span>
                     </label>
                     <Show when={municipalities()}>
@@ -328,7 +359,9 @@ export function AccountPage() {
                         width="full"
                         value={selectedMunicipality()}
                         required
-                        onChange={(value: Municipality["id"]) => setSelectedMunicipality(value)}
+                        onChange={(value: Municipality["id"]) =>
+                          setSelectedMunicipality(value)
+                        }
                         disabled={isSubmitting()}
                       >
                         <option value={null}>Select your municipality</option>
@@ -336,27 +369,32 @@ export function AccountPage() {
                           {(municipality) => (
                             <option value={municipality.id}>
                               {municipality.name}{" "}
-                              {municipality.area ? `(${municipality.area})` : ""}
+                              {municipality.area
+                                ? `(${municipality.area})`
+                                : ""}
                             </option>
                           )}
                         </For>
                       </Select>
                     </Show>
                     <Show when={!municipalities()}>
-                      <Select width="full" disabled onChange={() => { }}>
+                      <Select width="full" disabled onChange={() => {}}>
                         <option>Loading...</option>
                       </Select>
                     </Show>
                     <label>
                       <span class="text-sm text-base-content">
-                        You'll receive notifications for events in this municipality
+                        You'll receive notifications for events in this
+                        municipality
                       </span>
                     </label>
                   </div>
                   {/* Telegram Chat ID */}
                   <div>
                     <label class="label">
-                      <span class="label-text font-semibold">Telegram Chat ID</span>
+                      <span class="label-text font-semibold">
+                        Telegram Chat ID
+                      </span>
                       <span class="label-text-alt text-error">*</span>
                     </label>
                     <div class="input-group">
@@ -366,7 +404,9 @@ export function AccountPage() {
                         placeholder="Enter your Chat ID (e.g., 123456789)"
                         class="input input-bordered flex-1"
                         value={telegramChatId()}
-                        onInput={(e) => setTelegramChatId(e.currentTarget.value)}
+                        onInput={(e) =>
+                          setTelegramChatId(e.currentTarget.value)
+                        }
                         required
                         disabled={isSubmitting()}
                       />
@@ -375,8 +415,19 @@ export function AccountPage() {
                         class="btn btn-outline"
                         onClick={() => setShowInstructions(!showInstructions())}
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="size-4"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+                          />
                         </svg>
                         Help
                       </button>
@@ -390,16 +441,36 @@ export function AccountPage() {
                   {/* Error/Success Messages */}
                   <Show when={error()}>
                     <div class="alert alert-error">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="stroke-current shrink-0 h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                       <span>{error()}</span>
                     </div>
                   </Show>
                   <Show when={success()}>
                     <div class="alert alert-success">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="stroke-current shrink-0 h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                       <span>{success()}</span>
                     </div>
@@ -412,8 +483,19 @@ export function AccountPage() {
                       onClick={testNotification}
                       disabled={isSubmitting() || !telegramChatId().trim()}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mr-2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="size-4 mr-2"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                        />
                       </svg>
                       Send Test Message
                     </button>
@@ -429,8 +511,19 @@ export function AccountPage() {
                         </>
                       ) : (
                         <>
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 mr-2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="size-4 mr-2"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M4.5 12.75l6 6 9-13.5"
+                            />
                           </svg>
                           Save Settings
                         </>
@@ -448,7 +541,7 @@ export function AccountPage() {
               notificationPreference={notificationPreference()}
               municipalities={municipalities()}
               onDelete={() => {
-                setShowDeleteModal(true)
+                setShowDeleteModal(true);
               }}
             />
           </div>
@@ -458,7 +551,10 @@ export function AccountPage() {
           <dialog ref={modal} class="modal modal-open">
             <div class="modal-box">
               <h3 class="text-lg font-bold">Delete Notification Preference?</h3>
-              <p class="py-4">Are you sure you want to delete your notification preference? You will no longer receive notifications.</p>
+              <p class="py-4">
+                Are you sure you want to delete your notification preference?
+                You will no longer receive notifications.
+              </p>
               <div class="modal-action">
                 <Button
                   intent="primary"
@@ -472,20 +568,13 @@ export function AccountPage() {
                   onClick={handleDelete}
                   disabled={isDeleting()}
                 >
-                  {isDeleting() ? (
-                    <Spinner/>
-                  ) : (
-                    "Delete"
-                  )}
+                  {isDeleting() ? <Spinner /> : "Delete"}
                 </Button>
               </div>
             </div>
           </dialog>
-
         </Show>
-
       </div>
-
     </Suspense>
   );
 }
