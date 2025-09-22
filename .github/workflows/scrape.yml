@@ -13,7 +13,7 @@ jobs:
         working-directory: ./scraper
 
     env:
-      DB_CONNECTION_STRING: "postgresql://${{ secrets.DB_USER }}:${{ secrets.DB_PASSWORD }}@${{ vars.DB_HOST }}:6543/postgres"
+      DB_CONNECTION_STRING: "postgresql://${{ vars.DB_USER }}:${{ secrets.DB_PASSWORD }}@${{ vars.DB_HOST }}:6543/postgres"
 
     steps:
       - uses: actions/checkout@v4
