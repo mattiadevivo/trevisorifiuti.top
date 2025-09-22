@@ -1,10 +1,12 @@
-import { createSignal } from "solid-js";
+import { createSignal, useContext } from "solid-js";
 import { create as createConfig } from "../config";
 import { create as createSupabase } from "../supabase";
+import { useAuth } from "./context/auth";
 
 export default function Auth() {
   const [loading, setLoading] = createSignal(false);
   const [email, setEmail] = createSignal("");
+  const authContext = useAuth();
   const config = createConfig();
   const supabase = createSupabase(config.supabase);
 
@@ -13,7 +15,11 @@ export default function Auth() {
 
     try {
       setLoading(true);
-      const { error } = await supabase.auth.signInWithOtp({ email: email() });
+      authContext.signInWithMagicLink(email());
+      const { error } = await supabase.auth.signInWithOtp({
+        email: email(),
+        options: { emailRedirectTo: config.login.rediectUrl },
+      });
       if (error) throw error;
       alert("Check your email for the login link!");
     } catch (error) {

@@ -11,6 +11,10 @@
     {
       "name": "supabase",
       "path": "./supabase"
+    },
+    {
+      "name": "infrastructure",
+      "path": "./infrastructure"
     }
   ]
 }
