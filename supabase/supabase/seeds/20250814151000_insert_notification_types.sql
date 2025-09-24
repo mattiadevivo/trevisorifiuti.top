@@ -8,7 +8,7 @@ INSERT INTO tvtrash.notification_types (name, info) VALUES (
 -- add notification preference for test user via telegram
 /*
 INSERT INTO tvtrash.notification_preferences (user_id, notification_type_id, notification_info, municipality_id) VALUES (
-    'b09f140f-9f56-4300-906d-a0c396e58e9c',
+    (SELECT id FROM auth.users WHERE email = 'mattiadevivo@gmail.com' LIMIT 1),
     (SELECT id FROM tvtrash.notification_types WHERE name = 'telegram'),
     '{"chat_id": "597504975"}',
     (SELECT id FROM tvtrash.municipalities WHERE name = 'Casier' LIMIT 1)
