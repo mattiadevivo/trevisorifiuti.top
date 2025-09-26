@@ -41,6 +41,7 @@ const InstructionsCard: Component<{ show: boolean }> = (props) => (
 					stroke="currentColor"
 					class="w-5 h-5"
 				>
+					<title>Info icon</title>
 					<path
 						stroke-linecap="round"
 						stroke-linejoin="round"
@@ -90,6 +91,7 @@ const InstructionsCard: Component<{ show: boolean }> = (props) => (
 						viewBox="0 0 24 24"
 						class="stroke-current shrink-0 w-6 h-6"
 					>
+						<title>Info icon</title>
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -112,6 +114,7 @@ const InstructionsCard: Component<{ show: boolean }> = (props) => (
 						fill="none"
 						viewBox="0 0 24 24"
 					>
+						<title>Warning icon</title>
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -311,6 +314,7 @@ export function AccountPage() {
 										viewBox="0 0 24 24"
 										class="size-6 text-blue-500"
 									>
+										<title>Telegram logo</title>
 										<path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
 									</svg>
 									Telegram Notifications
@@ -318,12 +322,13 @@ export function AccountPage() {
 								<form onSubmit={handleSubmit} class="space-y-6">
 									{/* Municipality Selection */}
 									<div>
-										<label class="label">
+										<label class="label" for="municipality">
 											<span class="label-text font-semibold">Municipality of Interest</span>
 											<span class="label-text-alt text-error">*</span>
 										</label>
 										<Show when={municipalities()}>
 											<Select
+												id="municipality"
 												width="full"
 												value={selectedMunicipality()}
 												required
@@ -346,15 +351,13 @@ export function AccountPage() {
 												<option>Loading...</option>
 											</Select>
 										</Show>
-										<label>
-											<span class="text-sm text-base-content">
-												You'll receive notifications for events in this municipality
-											</span>
-										</label>
+										<span class="text-sm text-base-content">
+											You'll receive notifications for events in this municipality
+										</span>
 									</div>
 									{/* Telegram Chat ID */}
 									<div>
-										<label class="label">
+										<label class="label" for="telegram-chat-id">
 											<span class="label-text font-semibold">Telegram Chat ID</span>
 											<span class="label-text-alt text-error">*</span>
 										</label>
@@ -382,6 +385,7 @@ export function AccountPage() {
 													stroke="currentColor"
 													class="size-4"
 												>
+													<title>Question mark logo</title>
 													<path
 														stroke-linecap="round"
 														stroke-linejoin="round"
@@ -406,6 +410,7 @@ export function AccountPage() {
 												fill="none"
 												viewBox="0 0 24 24"
 											>
+												<title>Error icon</title>
 												<path
 													stroke-linecap="round"
 													stroke-linejoin="round"
@@ -424,6 +429,7 @@ export function AccountPage() {
 												fill="none"
 												viewBox="0 0 24 24"
 											>
+												<title>Success icon</title>
 												<path
 													stroke-linecap="round"
 													stroke-linejoin="round"
@@ -450,6 +456,7 @@ export function AccountPage() {
 												stroke="currentColor"
 												class="size-4 mr-2"
 											>
+												<title>Send icon</title>
 												<path
 													stroke-linecap="round"
 													stroke-linejoin="round"
@@ -474,6 +481,7 @@ export function AccountPage() {
 														stroke="currentColor"
 														class="size-4 mr-2"
 													>
+														<title>Save icon</title>
 														<path
 															stroke-linecap="round"
 															stroke-linejoin="round"

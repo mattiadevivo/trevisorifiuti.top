@@ -1,4 +1,4 @@
-import { createSignal, useContext } from "solid-js";
+import { createSignal } from "solid-js";
 import { create as createConfig } from "../config";
 import { create as createSupabase } from "../supabase";
 import { useAuth } from "./context/auth";

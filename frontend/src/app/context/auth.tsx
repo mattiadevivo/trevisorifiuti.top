@@ -85,8 +85,6 @@ export const AuthProvider: ParentComponent = (props) => {
 		try {
 			const { error } = await supabase.auth.signOut();
 			if (error) throw error;
-		} catch (error) {
-			throw error;
 		} finally {
 			setLoading(false);
 			navigate(redirectPage);

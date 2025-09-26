@@ -16,7 +16,9 @@ export const App: Component<Props> = (props) => {
 					fallback={(error, reset) => (
 						<div>
 							<p>Something went wrong: {error.message}</p>
-							<button onClick={reset}>Try Again</button>
+							<button type="button" onClick={reset}>
+								Try Again
+							</button>
 						</div>
 					)}
 				>

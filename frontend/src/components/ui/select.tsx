@@ -42,6 +42,7 @@ export interface Props
 export const Select: ParentComponent<Props> = (props) => {
 	return (
 		<select
+			id={props.id}
 			class={selectStyles({
 				intent: props.intent,
 				sizeVariant: props.sizeVariant,

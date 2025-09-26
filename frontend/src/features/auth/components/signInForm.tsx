@@ -5,7 +5,7 @@ interface SignInFormProps {
 	onSuccess: () => void;
 }
 
-export function SignInForm(props: SignInFormProps) {
+export function SignInForm(_props: SignInFormProps) {
 	const [email, setEmail] = createSignal("");
 	const [error, setError] = createSignal("");
 	const [success, setSuccess] = createSignal("");
@@ -39,10 +39,11 @@ export function SignInForm(props: SignInFormProps) {
 				<p class="label-text">Insert your email, you'll receive a link that will be used as OTP</p>
 				<form onSubmit={handleSubmit} class="space-y-4">
 					<div class="form-control">
-						<label class="label">
+						<label class="label" for="email">
 							<span class="label-text">Email</span>
 						</label>
 						<input
+							id="email"
 							type="email"
 							placeholder="Enter your email"
 							class="input input-bordered"
@@ -61,6 +62,7 @@ export function SignInForm(props: SignInFormProps) {
 								fill="none"
 								viewBox="0 0 24 24"
 							>
+								<title>Error icon</title>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -80,6 +82,7 @@ export function SignInForm(props: SignInFormProps) {
 								fill="none"
 								viewBox="0 0 24 24"
 							>
+								<title>Success icon</title>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"

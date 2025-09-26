@@ -15,16 +15,16 @@
 
 This repository is a **monorepo** containing all the core components needed for TVTrash:
 
-- **frontend/**  
+- **frontend**  
   A [SolidJS](https://solidjs.com) web application providing a user-friendly interface for Treviso residents to view the waste collection calendar and configure Telegram notifications.
 
-- **scraper/**  
+- **scraper**  
   Python scripts that automatically scrape waste collection data from the official website of the local waste management company, ensuring the app always displays up-to-date information.
 
-- **supabase/**  
+- **supabase**  
   Contains the database schema and edge functions for managing and serving waste collection data, notifications, and user preferences using [Supabase](https://supabase.com).
 
-- **infrastructure/**  
+- **infrastructure**  
   A [Terraform](https://www.terraform.io) project that defines the infrastructure as code for deploying the Supabase backend and the frontend application on [Render](https://render.com).
 
 Each project is independent, allowing for modular development and deployment.
