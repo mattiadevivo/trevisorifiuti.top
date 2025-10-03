@@ -9,7 +9,7 @@ from injector import inject
 @inject
 @dataclass
 class Services:
-    """Convenience class you can fetch with injector.get(Services)"""
+	"""Convenience class you can fetch with injector.get(Services)"""
 
-    municipality: MunicipalityService
-    collection_schedule: CollectionScheduleService
+	municipality: MunicipalityService
+	collection_schedule: CollectionScheduleService

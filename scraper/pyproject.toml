@@ -23,10 +23,17 @@ target-version = "py312"
 fix = true
 
 [tool.ruff.lint]
+select = ["E", "F"]
 ignore = ["E402"]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "tab"
+docstring-code-format = true
 
 [tool.coverage.run]
 omit = ["config.py"]
+
 
 [dependency-groups]
 dev = [
