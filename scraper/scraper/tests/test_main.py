@@ -1,5 +1,4 @@
-import unittest
-from unittest.mock import create_autospec
+from unittest.mock import create_autospec, Mock
 from venv import create
 from assertpy import assert_that, assert_warn
 from bs4 import BeautifulSoup
@@ -15,6 +14,7 @@ from scraper.main import (
 	extract_collection_schedules,
 	extract_municipality,
 	get_page_content,
+	scrape,
 )
 from scraper.services import Services
 from scraper.services.collection_schedules import CollectionScheduleService
@@ -130,3 +130,21 @@ def test_extract_and_save_collection_schedules(
 
 	# assertions
 	services.municipality.create.assert_called_once()
+
+
+@patch('scraper.main.extract_and_save_collection_schedules')
+@patch('scraper.main.get_page_content')
+def test_scrape(
+	mock_get_page_content: Mock,
+	mock_extract_and_save_collection_schedules: Mock,
+	settings,
+	html_content,
+	adapters,
+	services,
+):
+	mock_get_page_content.return_value = html_content
+	scrape(settings, adapters, services)
+	mock_get_page_content.assert_called_once_with(
+		adapters.http_client, settings.page_url
+	)
+	mock_extract_and_save_collection_schedules.assert_called()
