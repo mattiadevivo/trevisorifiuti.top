@@ -6,72 +6,67 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 // @deno-types="npm:@types/luxon@^3.6.2"
 import { DateTime } from "npm:luxon@^3.7.1";
-
-import { create as createConfig } from "./config.ts";
+import { z } from "npm:zod";
 import {
-  NotificationSenders,
-  sendNotification,
-} from "./notifications/index.ts";
-import {
-  create as createSupabase,
-  getSchedulesForDate,
+	create as createSupabase,
+	getSchedulesForDate,
 } from "./adapters/supabase.ts";
 import { create as createTelegram } from "./adapters/telegram.ts";
-import { z } from "npm:zod";
+import { create as createConfig } from "./config.ts";
+import {
+	type NotificationSenders,
+	sendNotification,
+} from "./notifications/index.ts";
 
 const RequestBodySchema = z.object({
-  user_id: z.uuid().optional(),
+	user_id: z.uuid().optional(),
 });
 Deno.serve(async (req: Request) => {
-  let notificationsSent: number = 0;
-  const { user_id } = RequestBodySchema.parse(await req.json());
-  try {
-    const config = createConfig();
-    const supabase = createSupabase(
-      config.supabase,
-      req.headers.get("Authorization")!,
-    );
-    const telegramBot = createTelegram(config.telegram);
+	let notificationsSent: number = 0;
+	const { user_id } = RequestBodySchema.parse(await req.json());
+	try {
+		const config = createConfig();
+		const supabase = createSupabase(
+			config.supabase,
+			req.headers.get("Authorization")!,
+		);
+		const telegramBot = createTelegram(config.telegram);
 
-    const notificationSenders: NotificationSenders = {
-      telegram: telegramBot,
-    };
-    const tomorrow = DateTime.now().plus({ days: 1 });
-    const schedules = await getSchedulesForDate(
-      supabase,
-      tomorrow,
-      user_id,
-    );
-    for (const schedule of schedules) {
-      await sendNotification(schedule, notificationSenders);
-      notificationsSent++;
-    }
-  } catch (err) {
-    console.error(JSON.stringify(err));
-    if (err instanceof z.ZodError) {
-      return new Response(
-        JSON.stringify({ message: err?.message ?? err, issues: err.issues }),
-        {
-          headers: { "Content-Type": "application/json" },
-          status: 422,
-        },
-      );
-    }
-    return new Response(JSON.stringify({ message: err?.message ?? err }), {
-      headers: { "Content-Type": "application/json" },
-      status: 500,
-    });
-  }
+		const notificationSenders: NotificationSenders = {
+			telegram: telegramBot,
+		};
+		const tomorrow = DateTime.now().plus({ days: 1 });
+		const schedules = await getSchedulesForDate(supabase, tomorrow, user_id);
+		for (const schedule of schedules) {
+			await sendNotification(schedule, notificationSenders);
+			notificationsSent++;
+		}
+	} catch (err) {
+		console.error(JSON.stringify(err));
+		if (err instanceof z.ZodError) {
+			return new Response(
+				JSON.stringify({ message: err?.message ?? err, issues: err.issues }),
+				{
+					headers: { "Content-Type": "application/json" },
+					status: 422,
+				},
+			);
+		}
+		return new Response(JSON.stringify({ message: err?.message ?? err }), {
+			headers: { "Content-Type": "application/json" },
+			status: 500,
+		});
+	}
 
-  return new Response(
-    JSON.stringify({
-      notifications_sent: notificationsSent,
-    }),
-    {
-      headers: { "Content-Type": "application/json" },
-      status: 200,
-    },
-  );
+	return new Response(
+		JSON.stringify({
+			notifications_sent: notificationsSent,
+		}),
+		{
+			headers: { "Content-Type": "application/json" },
+			status: 200,
+		},
+	);
 });
 
 /* To invoke locally:

@@ -1,23 +1,25 @@
 {
-  "name": "supabase",
-  "description": "Project containing supabase functions, SQL migrations and utils",
-  "scripts": {
-    "start": "pnpm exec supabase start --debug -x vector",
-    "start:db": "pnpm exec supabase db start",
-    "stop": "pnpm exec supabase stop --no-backup",
-    "stop:db": "pnpm exec supabase db stop",
-    "migration:add": "pnpm exec supabase migration new schema",
-    "migration:apply": "pnpm exec supabase db reset",
-    "functions": "supabase functions serve --env-file .env.local",
-    "generate:typescript": "pnpm exec supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres > ./supabase/functions/database.types.ts",
-    "ui": "open http://127.0.0.1:54323"
-  },
-  "devDependencies": {
-    "supabase": "2.34.3"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "supabase"
-    ]
-  }
+	"name": "supabase",
+	"description": "Project containing supabase functions, SQL migrations and utils",
+	"scripts": {
+		"start": "pnpm exec supabase start --debug -x vector",
+		"start:db": "pnpm exec supabase db start",
+		"stop": "pnpm exec supabase stop --no-backup",
+		"stop:db": "pnpm exec supabase db stop",
+		"migration:add": "pnpm exec supabase migration new schema",
+		"migration:apply": "pnpm exec supabase db reset",
+		"functions": "supabase functions serve --env-file .env.local",
+		"generate:typescript": "pnpm exec supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres > ./supabase/functions/database.types.ts",
+		"ui": "open http://127.0.0.1:54323",
+		"lint-format-fix": "pnpm exec biome check --write"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.5",
+		"supabase": "2.34.3"
+	},
+	"pnpm": {
+		"onlyBuiltDependencies": [
+			"supabase"
+		]
+	}
 }
