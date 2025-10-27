@@ -1,0 +1,8 @@
+{
+	"imports": {
+		"grammy": "npm:grammy@^1.37.0",
+		"supabase": "npm:@supabase/supabase-js@2",
+		"zod": "npm:zod@^4.0.10"
+	},
+	"nodeModulesDir": "auto"
+}

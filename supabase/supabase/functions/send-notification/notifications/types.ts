@@ -1,3 +1,4 @@
+import type { TelegramBot } from "../../_shared/adapters/telegram.ts";
 import type { Database } from "../database.types.ts";
 
 export type GetSchedulesResult =
@@ -5,4 +6,8 @@ export type GetSchedulesResult =
 
 export type TelegramNotificationInfo = {
 	chat_id: string;
+};
+
+export type NotificationSenders = {
+	telegram: TelegramBot;
 };

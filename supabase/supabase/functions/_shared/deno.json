@@ -1,0 +1,6 @@
+{
+	"imports": {
+		"grammy": "npm:grammy@^1.37.0"
+	},
+	"nodeModulesDir": "auto"
+}

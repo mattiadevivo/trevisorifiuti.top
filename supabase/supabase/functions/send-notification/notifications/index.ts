@@ -1,5 +1,9 @@
-import type { TelegramBot } from "../adapters/telegram.ts";
-import type { GetSchedulesResult, TelegramNotificationInfo } from "./types.ts";
+import type { TelegramBot } from "../../_shared/adapters/telegram.ts";
+import type {
+	GetSchedulesResult,
+	NotificationSenders,
+	TelegramNotificationInfo,
+} from "./types.ts";
 
 function createMessage(
 	scheduleDate: string,
@@ -27,10 +31,6 @@ async function sendTelegramNotification(
 		{ parse_mode: "HTML" },
 	);
 }
-
-export type NotificationSenders = {
-	telegram: TelegramBot;
-};
 
 export async function sendNotification(
 	notificationInfo: GetSchedulesResult[number],

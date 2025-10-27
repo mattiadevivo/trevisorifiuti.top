@@ -11,25 +11,27 @@ import {
 	create as createSupabase,
 	getSchedulesForDate,
 } from "./adapters/supabase.ts";
-import { create as createTelegram } from "./adapters/telegram.ts";
+import { create as createTelegram } from "../_shared/adapters/telegram.ts";
 import { create as createConfig } from "./config.ts";
-import {
-	type NotificationSenders,
-	sendNotification,
-} from "./notifications/index.ts";
+import { sendNotification } from "./notifications/index.ts";
+import type { NotificationSenders } from "./notifications/types.ts";
 
 const RequestBodySchema = z.object({
 	user_id: z.uuid().optional(),
 });
+const RequestHeadersSchema = z.object({
+	authorization: z.string(),
+});
+
 Deno.serve(async (req: Request) => {
 	let notificationsSent: number = 0;
 	const { user_id } = RequestBodySchema.parse(await req.json());
+	const { authorization } = RequestHeadersSchema.parse(
+		Object.fromEntries(req.headers),
+	);
 	try {
 		const config = createConfig();
-		const supabase = createSupabase(
-			config.supabase,
-			req.headers.get("Authorization")!,
-		);
+		const supabase = createSupabase(config.supabase, authorization);
 		const telegramBot = createTelegram(config.telegram);
 
 		const notificationSenders: NotificationSenders = {
@@ -42,7 +44,6 @@ Deno.serve(async (req: Request) => {
 			notificationsSent++;
 		}
 	} catch (err) {
-		console.error(JSON.stringify(err));
 		if (err instanceof z.ZodError) {
 			return new Response(
 				JSON.stringify({ message: err?.message ?? err, issues: err.issues }),
@@ -52,7 +53,8 @@ Deno.serve(async (req: Request) => {
 				},
 			);
 		}
-		return new Response(JSON.stringify({ message: err?.message ?? err }), {
+		const error: Error = err as Error;
+		return new Response(JSON.stringify({ message: error?.message ?? error }), {
 			headers: { "Content-Type": "application/json" },
 			status: 500,
 		});
