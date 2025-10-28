@@ -11,17 +11,17 @@ import {
 	Show,
 	Suspense,
 } from "solid-js";
-import { set } from "zod";
 import { useAuth } from "../../app/context/auth";
-import { create as createConfig } from "../../config";
+import { useSupabase } from "../context/supabase";
 import type { TelegramNotificationInfo } from "../../features/account/schemas/notification";
-import { create as createSupabase, getMunicipalities, type Municipality } from "../../supabase";
+import { getMunicipalities, type Municipality } from "../../supabase";
 import {
 	deleteNotificationPreference,
 	getNotificationPreferenceByUserId,
 	getTelegramNotificationTypeId,
 	type NotificationPreference,
 	saveNotificationPreference,
+	sendTestMessage,
 } from "../../supabase/account";
 
 // --- Instructions Card ---
@@ -184,8 +184,7 @@ const CurrentSettingsCard: Component<{
 );
 
 export function AccountPage() {
-	const config = createConfig();
-	const supabase = createSupabase(config.supabase);
+	const supabase = useSupabase();
 	const auth = useAuth();
 
 	const [municipalities] = createResource(supabase, getMunicipalities);
@@ -267,7 +266,11 @@ export function AccountPage() {
 			return;
 		}
 		try {
-			// await fetch('/api/telegram/test', { ... })
+			await sendTestMessage(
+				supabase,
+				(await auth.getSession()).access_token,
+				telegramChatId().trim(),
+			);
 			setSuccess("Test notification sent! Check your Telegram.");
 		} catch {
 			setError("Failed to send test notification");

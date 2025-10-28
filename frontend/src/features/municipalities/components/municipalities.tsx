@@ -1,11 +1,10 @@
 import { Table } from "@ui/table";
 import { type Component, createResource, For, Match, Show, Switch } from "solid-js";
-import { create as createConfig } from "../../../config";
-import { create as createSupabase, getMunicipalities } from "../../../supabase";
+import { useSupabase } from "../../../app/context/supabase";
+import { getMunicipalities } from "../../../supabase";
 
 export const Municipalities: Component = () => {
-	const config = createConfig();
-	const supabase = createSupabase(config.supabase);
+	const supabase = useSupabase();
 
 	const [municipalities] = createResource(supabase, getMunicipalities);
 

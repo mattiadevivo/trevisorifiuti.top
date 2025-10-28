@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import type { User } from "@supabase/supabase-js";
+import type { User, Session } from "@supabase/supabase-js";
 import {
 	createContext,
 	createSignal,
@@ -8,22 +8,24 @@ import {
 	type ParentComponent,
 	useContext,
 } from "solid-js";
-import { create as createConfig } from "../../config";
-import { create as createSupabase } from "../../supabase";
+import { useConfig } from "./config";
+import { useSupabase } from "./supabase";
 
 interface AuthContextType {
 	user: () => User | null;
 	loading: () => boolean;
 	signInWithMagicLink: (email: string) => Promise<void>;
 	signOut: () => Promise<void>;
+	getSession: () => Promise<Session | null>;
 }
 
 const AuthContext = createContext<AuthContextType>();
 
-const config = createConfig();
-const supabase = createSupabase(config.supabase);
+// Dependencies are provided via context providers
 
 export const AuthProvider: ParentComponent = (props) => {
+	const config = useConfig();
+	const supabase = useSupabase();
 	const [user, setUser] = createSignal<User | null>(null);
 	const [loading, setLoading] = createSignal(true);
 	const navigate = useNavigate();
@@ -47,7 +49,7 @@ export const AuthProvider: ParentComponent = (props) => {
 		// Listen for auth changes
 		const {
 			data: { subscription },
-		} = supabase.auth.onAuthStateChange(async (event, session) => {
+		} = supabase.auth.onAuthStateChange(async (_event, session) => {
 			setUser(session?.user ?? null);
 			setLoading(false);
 		});
@@ -91,11 +93,18 @@ export const AuthProvider: ParentComponent = (props) => {
 		}
 	};
 
+	const getSession = async () => {
+		const { data, error } = await supabase.auth.getSession();
+		if (error) throw error;
+		return data.session;
+	};
+
 	const value = {
 		user,
 		loading,
 		signInWithMagicLink,
 		signOut,
+		getSession,
 	};
 
 	return <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>;

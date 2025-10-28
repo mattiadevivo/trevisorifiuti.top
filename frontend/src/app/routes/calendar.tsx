@@ -10,10 +10,9 @@ import {
 	For,
 	Suspense,
 } from "solid-js";
-import { create as createConfig } from "../../config";
+import { useSupabase } from "../context/supabase";
 import { TelegramNotificationBanner } from "../../features/calendar/components/telegramBanner";
 import {
-	create as createSupabase,
 	getCollectionSchedulesByMunicipality,
 	getMunicipalities,
 	type Municipality,
@@ -21,8 +20,7 @@ import {
 
 export const RootPage: Component = () => {
 	const navigate = useNavigate();
-	const config = createConfig();
-	const supabase = createSupabase(config.supabase);
+	const supabase = useSupabase();
 
 	const [municipalities] = createResource(supabase, getMunicipalities);
 	const [municipalityId, setMunicipalityId] = createSignal<Municipality["id"] | null>(
