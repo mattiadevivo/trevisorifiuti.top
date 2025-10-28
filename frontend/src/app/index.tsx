@@ -9,7 +9,6 @@ import { App } from "./app";
 import { AccountPage } from "./routes/account";
 import { AuthPage } from "./routes/auth";
 import { RootPage } from "./routes/calendar";
-import { MunicipalitiesPage } from "./routes/municipalities";
 import { NotFoundPage } from "./routes/notFound";
 
 const root = document.getElementById("root");
@@ -24,7 +23,6 @@ render(
 	() => (
 		<Router root={App}>
 			<Route path="/" component={RootPage} />
-			<Route path="/municipalities" component={MunicipalitiesPage} />
 			<Route
 				path="/account"
 				component={() => (

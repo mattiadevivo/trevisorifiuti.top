@@ -1,7 +1,6 @@
 import { useNavigate } from "@solidjs/router";
 import { Select } from "@ui/select";
 import { Spinner } from "@ui/spinner";
-import { Table } from "@ui/table";
 import {
 	type Component,
 	createEffect,
@@ -12,6 +11,7 @@ import {
 } from "solid-js";
 import { useSupabase } from "../context/supabase";
 import { TelegramNotificationBanner } from "../../features/calendar/components/telegramBanner";
+import { CalendarTable } from "../../features/calendar/components/calendarTable";
 import {
 	getCollectionSchedulesByMunicipality,
 	getMunicipalities,
@@ -69,30 +69,8 @@ export const RootPage: Component = () => {
 					</Select>
 				</div>
 			</div>
-
-			{/* Telegram Notification Banner */}
 			<TelegramNotificationBanner onConfigureClick={handleConfigureNotifications} />
-
-			<Table>
-				<thead>
-					<tr>
-						<th>Date</th>
-						<th>Waste</th>
-					</tr>
-				</thead>
-				<tbody>
-					<For each={collectionSchedules()}>
-						{(schedule) => {
-							return (
-								<tr>
-									<td>{new Date(schedule.date).toLocaleDateString()}</td>
-									<td>{schedule.waste.join(", ")}</td>
-								</tr>
-							);
-						}}
-					</For>
-				</tbody>
-			</Table>
+			<CalendarTable schedules={collectionSchedules()} />
 		</Suspense>
 	);
 };

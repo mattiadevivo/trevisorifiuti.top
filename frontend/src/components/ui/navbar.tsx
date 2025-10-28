@@ -1,7 +1,6 @@
 import { A } from "@solidjs/router";
 import { type Component, Show } from "solid-js";
 import { useAuth } from "../../app/context/auth";
-import { useTheme } from "../../app/context/theme";
 import { UserMenu } from "../../features/auth/components/userMenu";
 
 interface Navbar {
@@ -11,7 +10,6 @@ interface Navbar {
 
 export const Navbar: Component<Navbar> = (_props) => {
 	const auth = useAuth();
-	const { theme, setTheme } = useTheme();
 	return (
 		<div class="navbar justify-between bg-base-100 text-base-content shadow-sm">
 			<div class="flex-1">
@@ -35,53 +33,8 @@ export const Navbar: Component<Navbar> = (_props) => {
 				>
 					<UserMenu />
 				</Show>
-				<ul class="menu menu-horizontal px-1">
-					<label class="toggle text-base-content justify-center">
-						<input
-							type="checkbox"
-							value="synthwave"
-							class="theme-controller"
-							checked={theme() === "dark"}
-							onChange={() => {
-								const newTheme = theme() === "dark" ? "light" : "dark";
-								setTheme(newTheme);
-							}}
-						/>
-						<svg aria-label="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-							<title>Sun or Moon container</title>
-							<g
-								stroke-linejoin="round"
-								stroke-linecap="round"
-								stroke-width="2"
-								fill="none"
-								stroke="currentColor"
-							>
-								<circle cx="12" cy="12" r="4"></circle>
-								<path d="M12 2v2"></path>
-								<path d="M12 20v2"></path>
-								<path d="m4.93 4.93 1.41 1.41"></path>
-								<path d="m17.66 17.66 1.41 1.41"></path>
-								<path d="M2 12h2"></path>
-								<path d="M20 12h2"></path>
-								<path d="m6.34 17.66-1.41 1.41"></path>
-								<path d="m19.07 4.93-1.41 1.41"></path>
-							</g>
-						</svg>
-						<svg aria-label="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-							<title>Sun or Moon icon</title>
-							<g
-								stroke-linejoin="round"
-								stroke-linecap="round"
-								stroke-width="2"
-								fill="none"
-								stroke="currentColor"
-							>
-								<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-							</g>
-						</svg>
-					</label>
-				</ul>
 			</div>
 		</div>
 	);
 };
+
