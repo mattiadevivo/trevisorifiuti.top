@@ -1,13 +1,14 @@
-CREATE SCHEMA IF NOT EXISTS tvtrash;
-
 -- Enable extension
 CREATE extension IF NOT EXISTS pg_cron WITH SCHEMA pg_catalog;
 CREATE extension IF NOT EXISTS pg_net WITH SCHEMA pg_net;
-
+-- "pgtap" is a unit testing framework for PostgreSQL
+create extension pgtap with schema extensions;
 GRANT usage ON SCHEMA cron TO postgres;
 GRANT all privileges ON all tables IN SCHEMA cron TO postgres;
 
-/*Add permissions*/
+CREATE SCHEMA IF NOT EXISTS tvtrash;
+
+/* Schema usage for all roles */
 GRANT USAGE ON SCHEMA tvtrash TO anon, authenticated, service_role;
 GRANT ALL ON ALL TABLES IN SCHEMA tvtrash TO anon, authenticated, service_role;
 GRANT ALL ON ALL ROUTINES IN SCHEMA tvtrash TO anon, authenticated, service_role;
@@ -104,7 +105,7 @@ BEGIN
   WHERE wc.date = target_date AND array_length(wc.waste, 1) > 0;
 END;
 $$;
-GRANT EXECUTE ON FUNCTION tvtrash.get_schedules_for_date(date) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION tvtrash.get_schedules_for_date(date) TO service_role;
 
 CREATE or REPLACE FUNCTION tvtrash.get_schedule_for_user(target_date DATE, target_user UUID)
 RETURNS TABLE (
@@ -119,16 +120,20 @@ RETURNS TABLE (
     notification_type_info JSONB,
     notification_info JSONB
 )
-LANGUAGE plpgsql
-SECURITY DEFINER SET search_path = ''
+LANGUAGE plpgsql  
+SECURITY INVOKER SET search_path = ''
 AS $$
 BEGIN
+  IF (select auth.role()) != 'service_role' AND target_user <> (select auth.uid()) THEN
+    RAISE EXCEPTION 'Forbidden: can only request your own schedule';
+  END IF;
+
   RETURN QUERY
   SELECT * FROM tvtrash.get_schedules_for_date(target_date) notifications
-  WHERE notifications.user_id = target_user;
+  WHERE notifications.user_id = (select auth.uid());
 END;
 $$ ;
-GRANT EXECUTE ON FUNCTION tvtrash.get_schedule_for_user(date, uuid) TO anon, authenticated, service_role;
+GRANT EXECUTE ON FUNCTION tvtrash.get_schedule_for_user(date, uuid) TO authenticated, service_role;
 /* end functions */
 
 /* cron jobs */

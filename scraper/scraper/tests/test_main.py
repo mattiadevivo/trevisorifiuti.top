@@ -1,6 +1,5 @@
 from unittest.mock import create_autospec, Mock
-from venv import create
-from assertpy import assert_that, assert_warn
+from assertpy import assert_that
 from bs4 import BeautifulSoup
 import httpx
 from injector import Injector

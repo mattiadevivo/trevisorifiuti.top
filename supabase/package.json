@@ -11,7 +11,8 @@
 		"functions": "supabase functions serve --env-file .env.local",
 		"generate:typescript": "pnpm exec supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres > ./supabase/functions/database.types.ts",
 		"ui": "open http://127.0.0.1:54323",
-		"lint-format-fix": "pnpm exec biome check --write"
+		"lint-format-fix": "pnpm exec biome check --write",
+		"db:test": "pnpm exec supabase db test"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",

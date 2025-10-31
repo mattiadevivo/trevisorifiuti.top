@@ -13,7 +13,7 @@ if __name__ == '__main__':
 	# tell the injector how to construct DBConfig
 	# since it will be used to create other Injectable containers
 	injector.binder.bind(DbConfig, DbConfig(settings.db_connection_string))
-	adapters = injector.get(Adapters)  # can be used in the future for convenience
+	adapters = injector.get(Adapters)
 	services = injector.get(Services)
 	result = get_page_content(adapters.http_client, settings.page_url)
 	scrape(settings, adapters, services)
