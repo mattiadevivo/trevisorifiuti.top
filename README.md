@@ -2,6 +2,7 @@
   <img src="frontend/public/favicon.png" alt="TVTrash Logo" width="96" height="96">
 </p>
 
+
 # TVTrash 
 
 **TVTrash** is a webapp designed for residents of **Treviso, Italy**. It provides an intuitive interface to discover the official waste collection calendar from the local waste management company, helping you stay organized and eco-friendly.
@@ -28,3 +29,9 @@ This repository is a **monorepo** containing all the core components needed for 
   A [Terraform](https://www.terraform.io) project that defines the infrastructure as code for deploying the Supabase backend and the frontend application on [Render](https://render.com).
 
 Each project is independent, allowing for modular development and deployment.
+
+## Application Flow Chart
+
+<p align="center">
+  <img src="docs/assets/application-flow.svg" alt="Application Flow Chart" >
+</p>
