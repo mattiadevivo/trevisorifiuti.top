@@ -1,7 +1,7 @@
 import { z } from "npm:zod";
 
 const EnvSchema = z.object({
-	SUPABASE_URL: z.string().default("http://127.0.0.1:54321"),
+	SUPABASE_URL: z.string(),
 	SUPABASE_SERVICE_ROLE_KEY: z.string(),
 	TELEGRAM_BOT_TOKEN: z
 		.string({

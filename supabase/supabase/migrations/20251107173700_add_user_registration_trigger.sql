@@ -4,10 +4,10 @@ AS $$
 BEGIN
     -- Make the HTTP POST request to the edge function
     perform net.http_post(
-        url:='http:/host.docker.internal:54321/functions/v1/send-notification',
+        url:= (select decrypted_secret from vault.decrypted_secrets where name = 'project_url') || '/functions/v1/send-notification',
         headers:=jsonb_build_object(
             'Content-Type', 'application/json',
-            'Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0'
+            'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'secret_key')
         ),
         body:=jsonb_build_object(
             'user_id', new.user_id

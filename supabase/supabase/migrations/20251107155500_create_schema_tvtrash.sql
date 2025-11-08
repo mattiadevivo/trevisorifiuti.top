@@ -20,7 +20,7 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA tvtrash GRANT ALL ON SEQUEN
 
 CREATE TABLE IF NOT EXISTS tvtrash.municipalities
 (
-    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    id UUID NOT NULL DEFAULT extensions.uuid_generate_v4(),
     name VARCHAR NOT NULL,
     area VARCHAR DEFAULT NULL,
     zone VARCHAR NOT NULL,
@@ -39,7 +39,7 @@ USING (true);
 
 CREATE TABLE IF NOT EXISTS tvtrash.waste_collections
 (
-    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    id UUID NOT NULL DEFAULT extensions.uuid_generate_v4(),
     date DATE NOT NULL,
     waste VARCHAR[] NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -61,7 +61,7 @@ USING (true);
 
 CREATE TABLE IF NOT EXISTS tvtrash.notification_types
 (
-    id UUID NOT NULL DEFAULT uuid_generate_v4(),
+    id UUID NOT NULL DEFAULT extensions.uuid_generate_v4(),
     name VARCHAR NOT NULL,
     info JSONB NOT NULL DEFAULT '{}',
     
@@ -193,7 +193,7 @@ GRANT EXECUTE ON FUNCTION tvtrash.get_schedule_for_user(date, uuid) TO authentic
 
 /* cron jobs */
 --select vault.create_secret('https://project-ref.supabase.co', 'project_url');
---select vault.create_secret('YOUR_SUPABASE_ANON_KEY', 'anon_key');
+--select vault.create_secret('YOUR_SUPABASE_ANON_KEY', 'publishable_key');
 -- Send notification every day at 09:00
 -- This will trigger the function to send notifications for the next day
 SELECT
@@ -206,7 +206,7 @@ SELECT
           url:= (select decrypted_secret from vault.decrypted_secrets where name = 'project_url') || '/functions/v1/send-notification',
           headers:=jsonb_build_object(
             'Content-type', 'application/json',
-            'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'anon_key')
+            'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'secret_key')
           )
       ) AS request_id;
     $$
