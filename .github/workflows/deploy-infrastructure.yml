@@ -7,7 +7,6 @@ on:
       - 'infrastructure/**'
 
 env:
-  TF_HTTP_USERNAME: ${{ github.actor }}
   TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
 
 jobs:
@@ -31,7 +30,6 @@ jobs:
         run: |
           echo "${{ secrets.RENDER_API_KEY }}" > render-api-key
           echo "${{ secrets.SUPABASE_ACCESS_TOKEN }}" > supabase-access-token
-          chmod 600 render-api-key supabase-access-token
 
       - name: Tofu Init
         run: tofu init
