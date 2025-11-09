@@ -40,6 +40,9 @@ jobs:
       - name: Tofu Validate
         run: tofu validate
 
+      - name: List files (debug)
+        run: ls -la
+        
       - name: Tofu Plan
         id: plan
         run: tofu plan -input=false -out=plan.tfplan
