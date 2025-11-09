@@ -26,10 +26,13 @@ jobs:
         with:
           tofu_version: "1.10.7"
 
-      - name: Setup Terraform files
+      - name: Setup authentication files
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
         run: |
-          echo "${{ secrets.RENDER_API_KEY }}" > render-api-key
-          echo "${{ secrets.SUPABASE_ACCESS_TOKEN }}" > supabase-access-token
+          echo "$RENDER_API_KEY" > render-api-key
+          echo "$SUPABASE_ACCESS_TOKEN" > supabase-access-token
 
       - name: Tofu Init
         run: tofu init
