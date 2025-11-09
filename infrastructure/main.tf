@@ -3,7 +3,7 @@ resource "supabase_project" "tvtrash" {
   organization_id   = var.supabase_organization_id
   name              = "tvtrash"
   region            = "eu-central-2"
-  database_password = file("${path.cwd}/access-token")
+  database_password = file("${path.cwd}/supabase-access-token")
 
   lifecycle {
     ignore_changes = [database_password]
@@ -43,7 +43,7 @@ resource "render_static_site" "tvtrash_dev" {
     VITE_LOGIN_REDIRECT_URL = {
       value = "https://tvtrash-dev.onrender.com"
     }
-    VITE_SUPABASE_ANON_KEY = {
+    VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY = {
       value = var.supabase_publishable_key
     }
     VITE_SUPABASE_URL = {

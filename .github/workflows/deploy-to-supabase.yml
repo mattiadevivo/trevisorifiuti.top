@@ -8,6 +8,7 @@ on:
 
 jobs:
   deploy:
+    name: Deploy database migrations and edge functions
     runs-on: ubuntu-latest
     defaults:
       run:

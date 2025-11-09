@@ -1,0 +1,48 @@
+name: Deploy Infrastructure with OpenTofu
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'infrastructure/**'
+
+env:
+  TF_HTTP_USERNAME: ${{ github.actor }}
+  TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
+
+jobs:
+  tofu:
+    name: 'Tofu Plan & Apply'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./infrastructure
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: "1.10.7"
+
+      - name: Setup Terraform files
+        run: |
+          echo "${{ secrets.RENDER_API_KEY }}" > render-api-key
+          echo "${{ secrets.SUPABASE_ACCESS_TOKEN }}" > supabase-access-token
+          chmod 600 render-api-key supabase-access-token
+
+      - name: Tofu Init
+        run: tofu init
+
+      - name: Tofu Validate
+        run: tofu validate
+
+      - name: Tofu Plan
+        id: plan
+        run: tofu plan -input=false -out=plan.tfplan
+
+      - name: Tofu Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: tofu apply -auto-approve plan.tfplan

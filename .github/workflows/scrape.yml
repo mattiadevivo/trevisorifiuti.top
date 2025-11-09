@@ -7,6 +7,7 @@ on:
 
 jobs:
   scrape:
+    name: Scrape waste collection data
     runs-on: ubuntu-latest
     defaults:
       run:
