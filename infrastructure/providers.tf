@@ -20,10 +20,10 @@ terraform {
 }
 
 provider "supabase" {
-  access_token = file("${path.cwd}/supabase-access-token")
+  access_token = var.supabase_access_token
 }
 
 provider "render" {
-  api_key  = file("${path.cwd}/render-api-key")
+  api_key  = var.render_api_key
   owner_id = "d396duje5dus73al6dq0" # or set RENDER_OWNER_ID environment variable
 }

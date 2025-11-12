@@ -28,6 +28,7 @@
       "denoland.vscode-deno",
       "ms-azuretools.vscode-docker",
       "bungcip.better-toml",
+      "hashicorp.terraform"
     ]
   }
 }
