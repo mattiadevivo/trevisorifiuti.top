@@ -1,6 +1,7 @@
 {
 	"imports": {
-		"grammy": "npm:grammy@^1.37.0"
+		"grammy": "npm:grammy@^1.37.0",
+		"pino": "npm:pino@^10.1.0"
 	},
 	"nodeModulesDir": "auto"
 }

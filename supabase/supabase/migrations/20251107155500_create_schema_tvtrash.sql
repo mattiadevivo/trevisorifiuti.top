@@ -162,7 +162,7 @@ END;
 $$;
 GRANT EXECUTE ON FUNCTION tvtrash.get_schedules_for_date(date) TO service_role;
 
-CREATE or REPLACE FUNCTION tvtrash.get_schedule_for_user(target_date DATE, target_user UUID)
+CREATE or REPLACE FUNCTION tvtrash.get_schedule_for_date_and_user(target_date DATE, target_user UUID)
 RETURNS TABLE (
     municipality_id UUID,
     municipality_name VARCHAR,
@@ -185,10 +185,10 @@ BEGIN
 
   RETURN QUERY
   SELECT * FROM tvtrash.get_schedules_for_date(target_date) notifications
-  WHERE notifications.user_id = (select auth.uid());
+  WHERE notifications.user_id = target_user;
 END;
 $$ ;
-GRANT EXECUTE ON FUNCTION tvtrash.get_schedule_for_user(date, uuid) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION tvtrash.get_schedule_for_date_and_user(date, uuid) TO authenticated, service_role;
 /* end functions */
 
 /* cron jobs */

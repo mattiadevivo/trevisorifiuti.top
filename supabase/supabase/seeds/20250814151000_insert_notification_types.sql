@@ -7,8 +7,7 @@ INSERT INTO tvtrash.notification_types (name, info) VALUES (
 
 -- add vault secrets
 -- select vault.create_secret('http://host.docker.internal:54321', 'project_url');
--- select vault.create_secret('YOUR_SUPABASE_ANON_KEY', 'anon_key');
--- select vault.create_secret('YOUR_SUPABASE_SERVICE_ROLE_KEY', 'service_role_key');
+-- select vault.create_secret('sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz', 'secret_key'); -- it is the local one, not a leak  :) 
 
 -- add notification preference for test user via telegram
 /*

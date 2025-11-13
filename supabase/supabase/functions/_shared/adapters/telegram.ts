@@ -1,4 +1,4 @@
-import { Bot } from "npm:grammy@^1.37.0";
+import { Bot } from "grammy";
 
 export type Config = {
 	botToken: string;

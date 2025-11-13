@@ -1,7 +1,7 @@
 import type { TelegramBot } from "../../_shared/adapters/telegram.ts";
-import type { Database } from "../database.types.ts";
+import type { Database } from "../../_shared/database.types.ts";
 
-export type GetSchedulesResult =
+export type GetSchedulesForDateResult =
 	Database["tvtrash"]["Functions"]["get_schedules_for_date"]["Returns"];
 
 export type TelegramNotificationInfo = {

@@ -4,15 +4,15 @@
 
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-// @deno-types="npm:@types/luxon@^3.6.2"
-import { DateTime } from "npm:luxon@^3.7.1";
-import { z } from "npm:zod";
+import { DateTime } from "luxon";
+import { z } from "zod";
 import {
 	create as createSupabase,
 	getSchedulesForDate,
 } from "./adapters/supabase.ts";
 import { create as createTelegram } from "../_shared/adapters/telegram.ts";
 import { create as createConfig } from "./config.ts";
+import { logger } from "../_shared/adapters/logger.ts";
 import { sendNotification } from "./notifications/index.ts";
 import type { NotificationSenders } from "./notifications/types.ts";
 
@@ -24,7 +24,6 @@ const RequestHeadersSchema = z.object({
 });
 
 Deno.serve(async (req: Request) => {
-	let notificationsSent: number = 0;
 	const { user_id } = RequestBodySchema.parse(await req.json());
 	const { authorization } = RequestHeadersSchema.parse(
 		Object.fromEntries(req.headers),
@@ -38,11 +37,18 @@ Deno.serve(async (req: Request) => {
 			telegram: telegramBot,
 		};
 		const tomorrow = DateTime.now().plus({ days: 1 });
+		console.log("getting collection schedules for date");
+		logger.info({ date: tomorrow }, "getting collection schedules for date");
 		const schedules = await getSchedulesForDate(supabase, tomorrow, user_id);
-		for (const schedule of schedules) {
-			await sendNotification(schedule, notificationSenders);
-			notificationsSent++;
-		}
+		logger.debug(
+			{ schedule_number: schedules.length },
+			"got collection schedules for date",
+		);
+		await Promise.allSettled(
+			schedules.map((schedule) =>
+				sendNotification(schedule, notificationSenders, logger),
+			),
+		);
 	} catch (err) {
 		if (err instanceof z.ZodError) {
 			return new Response(
@@ -60,15 +66,10 @@ Deno.serve(async (req: Request) => {
 		});
 	}
 
-	return new Response(
-		JSON.stringify({
-			notifications_sent: notificationsSent,
-		}),
-		{
-			headers: { "Content-Type": "application/json" },
-			status: 200,
-		},
-	);
+	return new Response(null, {
+		headers: { "Content-Type": "application/json" },
+		status: 204,
+	});
 });
 
 /* To invoke locally:

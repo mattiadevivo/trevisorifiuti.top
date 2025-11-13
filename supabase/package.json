@@ -12,14 +12,15 @@
 		"functions:serve": "supabase functions serve --env-file .env.local",
 		"functions:serve-no-verify-jwt": "supabase functions serve --env-file .env.local --no-verify-jwt",
 		"secrets:list": "pnpm exec supabase secrets list",
-		"generate:typescript": "pnpm exec supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres > ./supabase/functions/database.types.ts",
+		"secrets:set-dev": "pnpm exec supabase secrets set secret_key=sb_secret_N7UND0UgjKTVK-Uodkm0Hg_xSvEMPvz project_ur=http://127.0.0.1:54321",
+		"generate:typescript": "pnpm exec supabase gen types typescript --db-url postgresql://postgres:postgres@127.0.0.1:54322/postgres > ./supabase/functions/_shared/database.types.ts",
 		"ui": "open http://127.0.0.1:54323",
 		"lint-format-fix": "pnpm exec biome check --write",
 		"db:test": "pnpm exec supabase db test"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.2.5",
-		"supabase": "2.54.11"
+		"supabase": "2.58.5"
 	},
 	"engines": {
 		"node": "^=22.0.0"

@@ -11,9 +11,9 @@ select has_function(
 );
 select has_function(
     'tvtrash',
-    'get_schedule_for_user',
+    'get_schedule_for_date_and_user',
     ARRAY[ 'date', 'uuid' ],
-    'Function get_schedule_for_user(date) should exist'
+    'Function get_schedule_for_date_and_user(date) should exist'
 );
 
 -- insert into auth.users (id) values ('11111111-1111-1111-1111-111111111111');
@@ -23,7 +23,7 @@ select has_function(
 -- insert into tvtrash.waste_collections (id, date, waste, municipality_id) values ('44444444-4444-4444-4444-444444444444', CURRENT_DATE + INTERVAL '1 day', ARRAY['waste_test'], '33333333-3333-3333-3333-333333333333');
 
 select function_returns('tvtrash','get_schedules_for_date', ARRAY['date'], 'setof record');
-select function_returns('tvtrash','get_schedule_for_user', ARRAY['date', 'uuid'], 'setof record');
+select function_returns('tvtrash','get_schedule_for_date_and_user', ARRAY['date', 'uuid'], 'setof record');
 
 --select hasnt_rows($$select 1 from tvtrash.get_schedules_for_date((CURRENT_DATE + INTERVAL '1 day')::date)$$, 'No schedules for today');
 

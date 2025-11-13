@@ -1,6 +1,7 @@
+import type { Logger } from "../../_shared/adapters/logger.ts";
 import type { TelegramBot } from "../../_shared/adapters/telegram.ts";
 import type {
-	GetSchedulesResult,
+	GetSchedulesForDateResult,
 	NotificationSenders,
 	TelegramNotificationInfo,
 } from "./types.ts";
@@ -16,11 +17,17 @@ Domani <b>${scheduleDate}</b> a <b>${municipalityName}</b> verranno raccolti i s
 }
 async function sendTelegramNotification(
 	telegramBot: TelegramBot,
-	schedule: GetSchedulesResult[number],
+	schedule: GetSchedulesForDateResult[number],
+	logger: Logger,
 ) {
 	const notificationInfo =
 		schedule.notification_info as TelegramNotificationInfo;
-
+	logger.debug(
+		{
+			user_id: schedule.user_id,
+		},
+		"Sending telegram notification",
+	);
 	await telegramBot.api.sendMessage(
 		notificationInfo.chat_id,
 		createMessage(
@@ -33,19 +40,24 @@ async function sendTelegramNotification(
 }
 
 export async function sendNotification(
-	notificationInfo: GetSchedulesResult[number],
+	notificationInfo: GetSchedulesForDateResult[number],
 	notificationSenders: NotificationSenders,
+	logger: Logger,
 ) {
 	switch (notificationInfo.notification_type_name) {
 		case "telegram":
 			await sendTelegramNotification(
 				notificationSenders.telegram,
 				notificationInfo,
+				logger,
 			);
 			break;
 		default:
-			console.log(
-				`Unknown notification type: ${notificationInfo.notification_type_name}`,
+			logger.warn(
+				{
+					notification_type: notificationInfo.notification_type_name,
+				},
+				"Unknown notification type",
 			);
 			break;
 	}

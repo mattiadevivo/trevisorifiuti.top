@@ -1,7 +1,7 @@
 import { createClient, type SupabaseClient } from "jsr:@supabase/supabase-js@2";
-import type { DateTime } from "npm:luxon@^3.7.1";
+import type { DateTime } from "luxon";
 import type { Config as RootConfig } from "../config.ts";
-import type { Database } from "../database.types.ts";
+import type { Database } from "../../_shared/database.types.ts";
 
 export type Client = SupabaseClient<Database>;
 
@@ -25,7 +25,7 @@ export async function getSchedulesForDate(
 		// If a user_id is provided, we call the RPC to get schedules for that user
 		const { data, error } = await supabase
 			.schema("tvtrash")
-			.rpc("get_schedule_for_user", {
+			.rpc("get_schedule_for_date_and_user", {
 				target_date: date.toJSDate().toLocaleDateString("en-CA"),
 				target_user: user_id,
 			});

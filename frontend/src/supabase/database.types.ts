@@ -166,7 +166,7 @@ export type Database = {
 			[_ in never]: never;
 		};
 		Functions: {
-			get_schedule_for_user: {
+			get_schedule_for_date_and_user: {
 				Args: { target_date: string; target_user: string };
 				Returns: {
 					area: string;
