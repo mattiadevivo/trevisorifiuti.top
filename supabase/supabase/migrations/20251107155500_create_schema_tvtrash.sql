@@ -206,7 +206,8 @@ SELECT
           url:= (select decrypted_secret from vault.decrypted_secrets where name = 'project_url') || '/functions/v1/send-notification',
           headers:=jsonb_build_object(
             'Content-type', 'application/json',
-            'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'secret_key')
+            'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'secret_key'),
+            'apikey', (select decrypted_secret from vault.decrypted_secrets where name = 'secret_key')
           )
       ) AS request_id;
     $$

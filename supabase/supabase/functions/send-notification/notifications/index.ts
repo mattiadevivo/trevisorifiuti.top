@@ -28,7 +28,7 @@ async function sendTelegramNotification(
 		},
 		"Sending telegram notification",
 	);
-	await telegramBot.api.sendMessage(
+	const messageSent = await telegramBot.api.sendMessage(
 		notificationInfo.chat_id,
 		createMessage(
 			schedule.collection_date,
@@ -36,6 +36,13 @@ async function sendTelegramNotification(
 			schedule.waste,
 		),
 		{ parse_mode: "HTML" },
+	);
+	logger.debug(
+		{
+			user_id: schedule.user_id,
+			message_sent: messageSent,
+		},
+		"Telegram notification sent",
 	);
 }
 
