@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { useI18n } from "../../i18n";
+import { useI18n } from "../context/i18n";
 
 export const NotFoundPage: Component = () => {
 	const { t } = useI18n();

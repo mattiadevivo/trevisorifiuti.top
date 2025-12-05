@@ -1,9 +1,8 @@
 import { A } from "@solidjs/router";
 import { type Component, Show } from "solid-js";
 import { useAuth } from "../../app/context/auth";
-import { useI18n } from "../../i18n";
+import { useI18n } from "../../app/context/i18n";
 import { UserMenu } from "../../features/auth/components/userMenu";
-import { LanguageSwitcher } from "./languageSwitcher";
 
 interface Navbar {
 	currentUser?: { name: string; email: string } | null;
@@ -27,7 +26,6 @@ export const Navbar: Component<Navbar> = (_props) => {
 			</div>
 
 			<div class="flex items-center h-14 gap-2">
-				<LanguageSwitcher />
 				<A href="/" class="btn btn-primary btn-sm">
 					{t("navbar.calendar")}
 				</A>

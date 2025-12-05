@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../app/context/i18n";
 
 export const InstructionsCard: Component<{ show: boolean }> = (props) => {
 	const { t } = useI18n();

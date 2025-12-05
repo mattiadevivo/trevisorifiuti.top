@@ -1,7 +1,7 @@
 import { A } from "@solidjs/router";
 import { Show } from "solid-js";
 import { useAuth } from "../../../app/context/auth";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../app/context/i18n";
 
 export function UserMenu() {
 	const auth = useAuth();

@@ -3,7 +3,7 @@ import { Spinner } from "@ui/spinner";
 import { createEffect, createMemo, createResource, createSignal, Show, Suspense } from "solid-js";
 import { useAuth } from "../../app/context/auth";
 import { useSupabase } from "../context/supabase";
-import { useI18n } from "../../i18n";
+import { useI18n } from "../context/i18n";
 import type { TelegramNotificationInfo } from "../../features/account/schemas/notification";
 import { getMunicipalities, type Municipality } from "../../supabase";
 import {

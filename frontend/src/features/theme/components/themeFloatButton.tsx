@@ -1,6 +1,7 @@
 import { type Component, Show } from "solid-js";
 import { useTheme } from "../../../app/context/theme";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../app/context/i18n";
+import { Button } from "@ui/button";
 
 export const ThemeFloatButton: Component = () => {
 	const { theme, setTheme } = useTheme();
@@ -11,12 +12,7 @@ export const ThemeFloatButton: Component = () => {
 	};
 
 	return (
-		<button
-			type="button"
-			aria-label={t("theme.toggle")}
-			onClick={toggle}
-			class="fixed bottom-4 right-4 z-50 btn btn-circle bg-base-100 text-base-content border border-base-400 shadow-lg hover:shadow-xl"
-		>
+		<Button aria-label={t("theme.toggle")} size="lg" onClick={toggle} shape="circle" shadow="lg">
 			<Show
 				when={theme() === "dark"}
 				fallback={
@@ -67,6 +63,6 @@ export const ThemeFloatButton: Component = () => {
 					</g>
 				</svg>
 			</Show>
-		</button>
+		</Button>
 	);
 };

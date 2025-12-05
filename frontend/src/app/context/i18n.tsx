@@ -7,7 +7,7 @@ import {
 	type JSX,
 } from "solid-js";
 import { flatten, translator, resolveTemplate, type Flatten } from "@solid-primitives/i18n";
-import { en, it, type Dictionary } from "./dictionaries";
+import { en, it, type Dictionary } from "../../i18n/dictionaries";
 
 const dicts = {
 	en,

@@ -118,6 +118,11 @@ export const it = {
 		switchToDark: "Passa alla modalità scura",
 		switchToLight: "Passa alla modalità chiara",
 	},
+	language: {
+		toggle: "Toggle language",
+		switchToIt: "Switch to Italian",
+		switchToEn: "Switch to English",
+	},
 };
 
 export const en = {
@@ -239,6 +244,11 @@ export const en = {
 		toggle: "Toggle color theme",
 		switchToDark: "Switch to dark mode",
 		switchToLight: "Switch to light mode",
+	},
+	language: {
+		toggle: "Toggle language",
+		switchToIt: "Switch to Italian",
+		switchToEn: "Switch to English",
 	},
 };
 

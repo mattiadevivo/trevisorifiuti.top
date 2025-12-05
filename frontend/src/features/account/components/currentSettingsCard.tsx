@@ -3,7 +3,7 @@ import type { Municipality } from "../../../supabase";
 import type { NotificationPreference } from "../../../supabase/account";
 import type { TelegramNotificationInfo } from "../schemas/notification";
 import { Button } from "@ui/button";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../app/context/i18n";
 
 interface Props {
 	isConfigured: boolean;

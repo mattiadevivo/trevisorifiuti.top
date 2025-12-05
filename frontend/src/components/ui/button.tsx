@@ -13,10 +13,17 @@ const buttonStyles = cva("btn", {
 			md: "btn-md",
 			lg: "btn-lg",
 		},
+		shape: {
+			circle: "btn-circle",
+			square: "btn-square",
+		},
+		shadow: {
+			lg: "shadow-lg hover:shadow-xl"
+		}
 	},
 	defaultVariants: {
 		size: "md",
-		intent: "primary",
+		shape: "square",
 	},
 });
 
@@ -26,9 +33,9 @@ export interface Props
 		VariantProps<typeof buttonStyles> {}
 
 export const Button: ParentComponent<Props> = (props) => {
-	const { intent, size } = props;
+	const { intent, size, shape, shadow } = props;
 	return (
-		<button class={buttonStyles({ intent, size })} {...props}>
+		<button type="button" class={buttonStyles({ intent, size, shape })} {...props}>
 			{props.children}
 		</button>
 	);

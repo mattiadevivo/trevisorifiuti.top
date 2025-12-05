@@ -10,7 +10,7 @@ import {
 	Suspense,
 } from "solid-js";
 import { useSupabase } from "../context/supabase";
-import { useI18n } from "../../i18n";
+import { useI18n } from "../context/i18n";
 import { TelegramNotificationBanner } from "../../features/calendar/components/telegramBanner";
 import { CalendarTable } from "../../features/calendar/components/calendarTable";
 import {

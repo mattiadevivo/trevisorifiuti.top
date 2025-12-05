@@ -1,6 +1,6 @@
 import { For, Show, type Component } from "solid-js";
 import { Select } from "@ui/select";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../app/context/i18n";
 import type { Municipality } from "../../../supabase";
 
 interface Props {

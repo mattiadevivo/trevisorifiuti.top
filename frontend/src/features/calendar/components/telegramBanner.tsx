@@ -1,5 +1,4 @@
-import { createSignal, Show } from "solid-js";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../app/context/i18n";
 
 interface TelegramNotificationBannerProps {
 	onConfigureClick?: () => void;
