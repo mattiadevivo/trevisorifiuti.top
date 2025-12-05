@@ -2,7 +2,9 @@ import { Button } from "@ui/button";
 import { Spinner } from "@ui/spinner";
 import { createEffect, createMemo, createResource, createSignal, Show, Suspense } from "solid-js";
 import { useAuth } from "../../app/context/auth";
-import { useSupabase } from "../context/supabase";
+import { CurrentSettingsCard } from "../../features/account/components/currentSettingsCard";
+import { InstructionsCard } from "../../features/account/components/instructionsCard";
+import { TelegramNotificationForm } from "../../features/account/components/telegramNotificationForm";
 import type { TelegramNotificationInfo } from "../../features/account/schemas/notification";
 import { getMunicipalities, type Municipality } from "../../supabase";
 import {
@@ -13,13 +15,13 @@ import {
 	saveNotificationPreference,
 	sendTestMessage,
 } from "../../supabase/account";
-import { TelegramNotificationForm } from "../../features/account/components/telegramNotificationForm";
-import { InstructionsCard } from "../../features/account/components/instructionsCard";
-import { CurrentSettingsCard } from "../../features/account/components/currentSettingsCard";
+import { useI18n } from "../context/i18n";
+import { useSupabase } from "../context/supabase";
 
 export function AccountPage() {
 	const supabase = useSupabase();
 	const auth = useAuth();
+	const { t } = useI18n();
 
 	const [municipalities] = createResource(supabase, getMunicipalities);
 	const [telegramNotificationType] = createResource(supabase, getTelegramNotificationTypeId);
@@ -69,11 +71,12 @@ export function AccountPage() {
 		setIsSubmitting(true);
 
 		try {
-			if (!telegramChatId().trim()) throw new Error("Please enter your Telegram Chat ID");
-			if (!telegramNotificationType()) throw new Error("Telegram notification type not found");
-			if (!selectedMunicipality()) throw new Error("Please select a municipality");
+			if (!telegramChatId().trim()) throw new Error(t("account.errors.enterChatId"));
+			if (!telegramNotificationType())
+				throw new Error(t("account.errors.notificationTypeNotFound"));
+			if (!selectedMunicipality()) throw new Error(t("account.errors.selectMunicipality"));
 			if (!/^-?\d+$/.test(telegramChatId().trim()))
-				throw new Error("Invalid Chat ID format. It should be a number.");
+				throw new Error(t("account.errors.invalidChatId"));
 
 			await saveNotificationPreference(supabase, {
 				municipality_id: selectedMunicipality(),
@@ -85,9 +88,9 @@ export function AccountPage() {
 			});
 
 			refetchNotificationPreference();
-			setSuccess("Profile updated successfully! You will start receiving notifications soon.");
+			setSuccess(t("account.success.profileUpdated"));
 		} catch (err: any) {
-			setError(err.message || "An error occurred while saving your profile");
+			setError(err.message || t("account.errors.saveProfileError"));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -96,7 +99,7 @@ export function AccountPage() {
 	// Test notification handler
 	const testNotification = async () => {
 		if (!telegramChatId().trim()) {
-			setError("Please save your Chat ID first");
+			setError(t("account.errors.saveChatIdFirst"));
 			return;
 		}
 		try {
@@ -105,9 +108,9 @@ export function AccountPage() {
 				(await auth.getSession()).access_token,
 				telegramChatId().trim(),
 			);
-			setSuccess("Test notification sent! Check your Telegram.");
+			setSuccess(t("account.success.testSent"));
 		} catch {
-			setError("Failed to send test notification");
+			setError(t("account.errors.sendTestError"));
 		}
 	};
 
@@ -119,10 +122,10 @@ export function AccountPage() {
 		try {
 			await deleteNotificationPreference(supabase, auth.user().id);
 			refetchNotificationPreference();
-			setSuccess("Notification preference deleted. You will no longer receive notifications.");
+			setSuccess(t("account.success.deleted"));
 			setShowDeleteModal(false);
 		} catch (err: any) {
-			setError(err.message || "Failed to delete notification preference.");
+			setError(err.message || t("account.errors.deleteError"));
 		} finally {
 			setIsDeleting(false);
 		}
@@ -135,11 +138,11 @@ export function AccountPage() {
 			<div class="min-h-screen">
 				<div class="breadcrumbs text-sm mb-6">
 					<ul>
-						<li>Profile</li>
-						<li>Notification Settings</li>
+						<li>{t("account.profile")}</li>
+						<li>{t("account.notificationSettings")}</li>
 					</ul>
 				</div>
-				<h1 class="text-3xl font-bold mb-8">Notification Settings</h1>
+				<h1 class="text-3xl font-bold mb-8">{t("account.notificationSettings")}</h1>
 				<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 					<div>
 						<TelegramNotificationForm
@@ -173,21 +176,18 @@ export function AccountPage() {
 				<Show when={showDeleteModal()}>
 					<dialog ref={modal} class="modal modal-open">
 						<div class="modal-box">
-							<h3 class="text-lg font-bold">Delete Notification Preference?</h3>
-							<p class="py-4">
-								Are you sure you want to delete your notification preference? You will no longer
-								receive notifications.
-							</p>
+							<h3 class="text-lg font-bold">{t("account.modal.deleteTitle")}</h3>
+							<p class="py-4">{t("account.modal.deleteMessage")}</p>
 							<div class="modal-action">
 								<Button
 									intent="primary"
 									onClick={() => setShowDeleteModal(false)}
 									disabled={isDeleting()}
 								>
-									Cancel
+									{t("account.modal.cancel")}
 								</Button>
 								<Button intent="danger" onClick={handleDelete} disabled={isDeleting()}>
-									{isDeleting() ? <Spinner /> : "Delete"}
+									{isDeleting() ? <Spinner /> : t("account.modal.delete")}
 								</Button>
 							</div>
 						</div>

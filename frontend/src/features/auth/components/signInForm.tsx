@@ -1,5 +1,6 @@
 import { createSignal } from "solid-js";
 import { useAuth } from "../../../app/context/auth";
+import { useI18n } from "../../../app/context/i18n";
 
 interface SignInFormProps {
 	onSuccess: () => void;
@@ -12,6 +13,7 @@ export function SignInForm(_props: SignInFormProps) {
 	const [isSubmitting, setIsSubmitting] = createSignal(false);
 
 	const auth = useAuth();
+	const { t } = useI18n();
 
 	const handleSubmit = async (e: Event) => {
 		e.preventDefault();
@@ -21,11 +23,9 @@ export function SignInForm(_props: SignInFormProps) {
 
 		try {
 			await auth.signInWithMagicLink(email());
-			setSuccess(
-				"Please check the login link in your email inbox in order to complete the sign-in process.",
-			);
+			setSuccess(t("auth.signInSuccess"));
 		} catch (err: any) {
-			setError(err.message || "An error occurred during sign-in.");
+			setError(err.message || t("auth.signInError"));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -34,18 +34,18 @@ export function SignInForm(_props: SignInFormProps) {
 	return (
 		<div class="card w-96 bg-base-100 shadow-xl">
 			<div class="card-body">
-				<h2 class="card-title justify-center">Sign In</h2>
+				<h2 class="card-title justify-center">{t("auth.signIn")}</h2>
 
-				<p class="label-text">Insert your email, you'll receive a link that will be used as OTP</p>
+				<p class="label-text">{t("auth.signInDescription")}</p>
 				<form onSubmit={handleSubmit} class="space-y-4">
 					<div class="form-control">
 						<label class="label" for="email">
-							<span class="label-text">Email</span>
+							<span class="label-text">{t("auth.email")}</span>
 						</label>
 						<input
 							id="email"
 							type="email"
-							placeholder="Enter your email"
+							placeholder={t("auth.emailPlaceholder")}
 							class="input input-bordered"
 							value={email()}
 							onInput={(e) => setEmail(e.currentTarget.value)}
@@ -99,10 +99,10 @@ export function SignInForm(_props: SignInFormProps) {
 							{isSubmitting() ? (
 								<>
 									<span class="loading loading-spinner loading-sm"></span>
-									Sending email...
+									{t("auth.sendingEmail")}
 								</>
 							) : (
-								"Sign In"
+								t("auth.signIn")
 							)}
 						</button>
 					</div>

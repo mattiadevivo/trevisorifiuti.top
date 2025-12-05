@@ -9,18 +9,20 @@ import {
 	For,
 	Suspense,
 } from "solid-js";
-import { useSupabase } from "../context/supabase";
-import { TelegramNotificationBanner } from "../../features/calendar/components/telegramBanner";
 import { CalendarTable } from "../../features/calendar/components/calendarTable";
+import { TelegramNotificationBanner } from "../../features/calendar/components/telegramBanner";
 import {
 	getCollectionSchedulesByMunicipality,
 	getMunicipalities,
 	type Municipality,
 } from "../../supabase";
+import { useI18n } from "../context/i18n";
+import { useSupabase } from "../context/supabase";
 
 export const RootPage: Component = () => {
 	const navigate = useNavigate();
 	const supabase = useSupabase();
+	const { t } = useI18n();
 
 	const [municipalities] = createResource(supabase, getMunicipalities);
 	const [municipalityId, setMunicipalityId] = createSignal<Municipality["id"] | null>(
@@ -47,10 +49,8 @@ export const RootPage: Component = () => {
 			{/* Calendar Header */}
 			<div class="flex justify-between items-center mb-6">
 				<div class="w-2/3">
-					<h1 class="text-3xl font-bold">Calendar</h1>
-					<p class="opacity-60 mt-1">
-						Check the waste collection calendar for your municipality in the province of Treviso
-					</p>
+					<h1 class="text-3xl font-bold">{t("calendar.title")}</h1>
+					<p class="opacity-60 mt-1">{t("calendar.description")}</p>
 				</div>
 				<div class="w-1/3 flex justify-end">
 					<Select

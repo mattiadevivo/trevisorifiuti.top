@@ -1,5 +1,6 @@
 import { type JSX, Show } from "solid-js";
 import { useAuth } from "../../../app/context/auth";
+import { useI18n } from "../../../app/context/i18n";
 
 interface Props {
 	children: JSX.Element;
@@ -7,6 +8,7 @@ interface Props {
 
 export function ProtectedRoute(props: Props) {
 	const auth = useAuth();
+	const { t } = useI18n();
 
 	return (
 		<Show
@@ -23,11 +25,11 @@ export function ProtectedRoute(props: Props) {
 					<div class="min-h-screen bg-base-200 flex items-center justify-center">
 						<div class="card w-96 bg-base-100 shadow-xl">
 							<div class="card-body text-center">
-								<h2 class="card-title justify-center">Access Denied</h2>
-								<p>You need to be logged in to access this page.</p>
+								<h2 class="card-title justify-center">{t("auth.accessDenied")}</h2>
+								<p>{t("auth.loginRequired")}</p>
 								<div class="card-actions justify-center">
 									<a href="/auth" class="btn btn-primary">
-										Sign In
+										{t("auth.signIn")}
 									</a>
 								</div>
 							</div>

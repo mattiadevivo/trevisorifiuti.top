@@ -1,6 +1,6 @@
 import { createContext, type ParentComponent, useContext } from "solid-js";
-import { useConfig } from "./config";
 import { create as createSupabase, type Client as SupabaseClient } from "../../supabase";
+import { useConfig } from "./config";
 
 interface SupabaseContextType {
 	client: SupabaseClient;
@@ -12,11 +12,7 @@ export const SupabaseProvider: ParentComponent = (props) => {
 	const config = useConfig();
 	const client = createSupabase(config.supabase);
 
-	return (
-		<SupabaseContext.Provider value={{ client }}>
-			{props.children}
-		</SupabaseContext.Provider>
-	);
+	return <SupabaseContext.Provider value={{ client }}>{props.children}</SupabaseContext.Provider>;
 };
 
 export const useSupabase = () => {

@@ -1,7 +1,5 @@
 import { createContext, type ParentComponent, useContext } from "solid-js";
-import { Config } from "../../config";
-
-import { create as createConfig } from "../../config";
+import { type Config, create as createConfig } from "../../config";
 
 interface ConfigContextType {
 	config: Config;

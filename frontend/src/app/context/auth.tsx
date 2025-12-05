@@ -1,5 +1,5 @@
 import { useNavigate } from "@solidjs/router";
-import type { User, Session } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js";
 import {
 	createContext,
 	createSignal,
