@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import devtools from "solid-devtools/vite";
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
+import Sitemap from "vite-plugin-sitemap";
 
 export default defineConfig({
 	plugins: [
@@ -10,6 +11,38 @@ export default defineConfig({
 		tailwindcss(),
 		devtools({
 			autoname: true, // e.g. enable autoname
+		}),
+		Sitemap({
+			hostname: "https://trevisorifiuti.top",
+			outDir: "dist",
+			generateRobotsTxt: true,
+			robots: [
+				{
+					userAgent: "*",
+					allow: ["/"],
+					disallow: ["/account"],
+				},
+				// Specific bots
+				{
+					userAgent: "Googlebot",
+					allow: ["/"],
+					crawlDelay: 1,
+				},
+				{
+					userAgent: "BingBot",
+					allow: ["/"],
+					crawlDelay: 1,
+				},
+				// Bad bots
+				{
+					userAgent: "AhrefsBot",
+					disallow: ["/"],
+				},
+				{
+					userAgent: "SemrushBot",
+					disallow: ["/"],
+				},
+			],
 		}),
 	],
 	server: {

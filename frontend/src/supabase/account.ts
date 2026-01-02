@@ -45,13 +45,3 @@ export async function deleteNotificationPreference(client: Client, userId: User[
 		.eq("user_id", userId);
 	return data;
 }
-
-export async function sendTestMessage(client: Client, jwt: string, chatId: string) {
-	const { data } = await client.functions.invoke("send-telegram-test", {
-		headers: {
-			authorization: `Bearer ${jwt}`,
-		},
-		body: JSON.stringify({ chat_id: chatId }),
-	});
-	return data;
-}

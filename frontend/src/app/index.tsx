@@ -23,22 +23,20 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 render(
 	() => (
-		<MetaProvider>
-			<Router root={App}>
-				<Route path="/" component={LandingPage} />
-				<Route path="/calendar" component={RootPage} />
-				<Route
-					path="/account"
-					component={() => (
-						<ProtectedRoute>
-							<AccountPage />
-						</ProtectedRoute>
-					)}
-				/>
-				<Route path="/auth" component={AuthPage} />
-				<Route path="*paramName" component={NotFoundPage} />
-			</Router>
-		</MetaProvider>
+		<Router root={App}>
+			<Route path="/" component={LandingPage} />
+			<Route path="/calendar" component={RootPage} />
+			<Route
+				path="/account"
+				component={() => (
+					<ProtectedRoute>
+						<AccountPage />
+					</ProtectedRoute>
+				)}
+			/>
+			<Route path="/auth" component={AuthPage} />
+			<Route path="*paramName" component={NotFoundPage} />
+		</Router>
 	),
 	root,
 );

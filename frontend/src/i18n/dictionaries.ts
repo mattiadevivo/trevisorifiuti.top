@@ -19,7 +19,7 @@ export const it = {
 		hero: {
 			title: "Non dimenticare mai più di buttare la spazzatura!",
 			description:
-				"Ricevi un reminder su Telegram ogni giorno con i dettagli dei bidoni da portare in strada per la raccolta rifiuti del giorno successivo, nel tuo comune in provincia di Treviso. Semplice, puntuale e gratuito. Nessuna installazione necessaria!",
+				"Ricevi quotidianamente un reminder su Telegram con i dettagli dei bidoni da portare in strada per la raccolta rifiuti del giorno successivo, nel tuo comune, in provincia di Treviso. Semplice, puntuale e gratuito. Nessuna installazione necessaria!",
 			ctaCalendar: "Vai al Calendario",
 			ctaAuth: "Accedi per configurare le notifiche",
 		},

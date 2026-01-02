@@ -26,7 +26,7 @@ export const Navbar: Component<Navbar> = (_props) => {
 			</div>
 
 			<div class="flex items-center h-14 gap-2">
-				<A href="/" class="btn btn-primary btn-sm">
+				<A href="/calendar" class="btn btn-primary btn-sm">
 					{t("navbar.calendar")}
 				</A>
 				<Show
