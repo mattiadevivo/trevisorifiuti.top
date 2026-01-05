@@ -28,6 +28,7 @@ resource "render_project" "tvtrash" {
   }
 }
 resource "render_static_site" "tvtrash_dev" {
+  count         = 0 # disabled since we are using github pages
   name          = "TVTrash-dev"
   repo_url      = "https://github.com/mattiadevivo/TVTrash"
   build_command = "pnpm build"

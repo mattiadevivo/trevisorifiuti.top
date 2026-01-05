@@ -51,7 +51,7 @@ export default defineConfig({
 			manifest: {
 				name: "trevisorifiuti",
 				short_name: "tvtrash",
-				start_url: "/",
+				start_url: "/calendar",
 				description: "trevisorifiuti - never miss a garbage collection again",
 				display: "standalone",
 				theme_color: "#ffffff",
