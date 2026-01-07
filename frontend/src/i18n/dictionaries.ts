@@ -138,6 +138,20 @@ export const it = {
 		switchToIt: "Switch to Italian",
 		switchToEn: "Switch to English",
 	},
+	compliance: {
+		privacyPolicy: {
+			title: "Privacy Policy",
+			href: "https://www.iubenda.com/privacy-policy/25822999",
+		},
+		cookiePolicy: {
+			title: "Cookie Policy",
+			href: "https://www.iubenda.com/privacy-policy/25822999/cookie-policy",
+		},
+		termsAndConditions: {
+			title: "Termini e Condizioni",
+			href: "https://www.iubenda.com/termini-e-condizioni/25822999",
+		},
+	},
 };
 
 export const en = {
@@ -279,6 +293,20 @@ export const en = {
 		toggle: "Toggle language",
 		switchToIt: "Switch to Italian",
 		switchToEn: "Switch to English",
+	},
+	compliance: {
+		privacyPolicy: {
+			title: "Privacy Policy",
+			href: "https://www.iubenda.com/privacy-policy/83700025",
+		},
+		cookiePolicy: {
+			title: "Cookie Policy",
+			href: "https://www.iubenda.com/privacy-policy/83700025/cookie-policy",
+		},
+		termsAndConditions: {
+			title: "Terms and Conditions",
+			href: "https://www.iubenda.com/terms-and-conditions/83700025",
+		},
 	},
 };
 
