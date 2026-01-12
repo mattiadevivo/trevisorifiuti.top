@@ -33,7 +33,6 @@ render(
 				<Route path="/notifications" component={AccountPage} />
 			</Route>
 			<Route path="/login" component={AuthPage} />
-			<Route path="*404" component={NotFoundPage} />
 		</Router>
 	),
 	root,
