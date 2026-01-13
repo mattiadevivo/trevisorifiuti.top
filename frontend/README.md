@@ -4,89 +4,40 @@
 
 # TVTrash Frontend
 
-**TVTrash** is a webapp designed for residents of **Treviso, Italy**. It provides an intuitive interface to discover the official waste collection calendar from the local waste management company, helping you stay organized and eco-friendly.
+This directory contains the **SolidJS** web application for **TVTrash**. It provides a fast, reactive user interface for Treviso residents to view waste collection schedules and manage notifications.
 
-**Key Features:**
-- 📅 **Waste Collection Calendar:** Instantly check which waste types will be collected on any given day.
-- 🔔 **Telegram Notifications:** Configure reminders to get notified the day before collection, so you never miss a pickup.
-- 🌍 **Local Focus:** Tailored for Treviso city, with accurate, up-to-date data.
+## 🛠 Tech Stack
 
----
+- **[SolidJS](https://solidjs.com)** - A declarative, efficient, and flexible JavaScript library for building user interfaces.
+- **[Vite](https://vitejs.dev)** - Next Generation Frontend Tooling.
+- **[Tailwind CSS](https://tailwindcss.com)** - A utility-first CSS framework for rapidly building custom designs.
+- **[DaisyUI](https://daisyui.com)** - The most popular, free and open-source Tailwind CSS component library.
+- **[Supabase JS](https://supabase.com/docs/reference/javascript/introduction)** - Supabase client for interacting with the backend.
 
 ## 🚀 Quick Start
 
-Clone the repo and install dependencies:
+### 1. Install Dependencies
 
 ```bash
-git clone https://github.com/yourusername/TVTrash.git
-cd TVTrash/frontend
-npm install # or pnpm install or yarn install
+pnpm install
 ```
 
-Start the development server:
+### 2. Configure Environment
+
+Copy `.env.example` to `.env` (if available) or ensure you have the necessary Supabase environment variables:
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+### 3. Run Development Server
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
----
-
 ## 📦 Scripts
 
-- **`npm run dev`** – Start development server
-- **`npm run build`** – Build for production
-- **`npm start`** – Alias for dev
-
----
-
-## 🌐 Deployment
-
-Build your app:
-
-```bash
-npm run build
-```
-
-Deploy the contents of the `dist` folder to any static host (Netlify, Vercel, Surge, etc.).
-
----
-
-## 🤝 Community & Resources
-
-- [SolidJS Documentation](https://solidjs.com)
-- [Discord Community](https://discord.com/invite/solidjs)
-
----
-
-## 🛠️ Tech Stack
-
-- **SolidJS** – Reactive UI library
-- **pnpm** – Fast, disk-efficient package manager
-
----
-
-## 🏗️ Project Structure
-
-```
-frontend/
-├── public/
-│   └── favicon.png
-├── src/
-│   └── ...
-├── package.json
-└── README.md
-```
-
----
-
-## ✨ Credits
-
-Created with [Solid CLI](https://github.com/solidjs-community/solid-cli).
-
----
-
-<p align="center">
-  <img src="public/favicon.png" alt="TVTrash Logo" width="48" height="48">
-</p>
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build locally

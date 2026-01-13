@@ -1,51 +1,39 @@
-# Supabase
+# TVTrash Supabase
 
-This project contains various stuff related to Supabase:
+This directory manages the backend for **TVTrash** using **[Supabase](https://supabase.com)**. It includes database migrations, types, and Edge Functions.
 
-- sql migrations to be used both for dev and deploy purposes
-- supabase functions
+## 🗂 Contents
 
-## Migrations
+- **Migrations**: SQL scripts for database schema changes and setup (located in `supabase/migrations`).
+- **Edge Functions**: Serverless TypeScript functions for backend logic (e.g., sending notifications).
+- **Seed Data**: Initial data for local development.
 
-- https://supabase.com/docs/guides/deployment/managing-environments?queryGroups=environment&environment=ci#deploy-a-migration
-- expose custom schema to API https://supabase.com/docs/guides/api/using-custom-schemas
+## 🚀 Local Development
 
-## DevEnv
+To run the local Supabase instance, ensure you have the [Supabase CLI](https://supabase.com/docs/guides/cli) installed or use the project scripts.
 
-Install global packages
-```
+### 1. Install Dependencies
+
+```bash
 pnpm install
 ```
 
-Run the local Supabase instance
-```
+### 2. Start Supabase
+
+```bash
 pnpm start
 ```
 
-## About Security
+## 🔐 Security & RLS
 
-You can connect to Data API securely from your frontend application as long as:
-- RLS is activated
-- **Anonymous Supabase key** is used to create the Supabase client
+TVTrash relies on **Row Level Security (RLS)** to protect data.
+- The **Anonymous Supabase key** is safe to expose on the frontend because all access is mediated by RLS policies.
+- **Edge Functions** validation: Authentication in Edge Functions utilizes the `Authorization` header (Bearer JWT) and the `apikey` header.
 
-The anon key is safe to expose with RLS enabled, because row access permission is checked against your access policies and the user's JSON Web Token (JWT). The JWT is automatically sent by the Supabase client libraries if the user is logged in using Supabase Auth.
+## 📡 PostgREST & Custom Schema
 
-With new `secret_key` and `publishable_key`, as stated in https://supabase.com/changelog?next=Y3Vyc29yOnYyOpK0MjAyNC0wOS0xM1QxNTowMDoyOVrOAG2JYw==&restPage=2, since they are no longer JWTs, in case we want to keep using them as authentication method in Edge functions, they are only allowed if the value in the header exactly matches the value in the `apikey` header.
+The project uses a custom schema named `tvtrash`. To access tables in this schema via the REST API, you must specify the schema in the header:
 
-Example:
-```
-curl -i --location --request POST 'http://127.0.0.1:54321/functions/v1/send-notification' \
-  --header 'Authorization: Bearer sb_publishable_aaaaaaaaaaaaaaaaaaaa' \
-  --header 'Content-Type: application/json' \
-  --header 'apikey: sb_publishable_aaaaaaaaaaaaaaaaaaaa' \
-  --data '{"user_id":"<user_id>"}'
-```
-
-## PostgREST
-
-Since we are using a custom schema (tvtrash), we need to use the header `"Accept-Profile: tvtrash"` to access the API.
-
-Example:
-```sh
+```bash
 curl -H "Accept-Profile: tvtrash" http://localhost:54321/rest/v1/municipalities?select=*
 ```
