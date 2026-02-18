@@ -15,5 +15,4 @@ if __name__ == '__main__':
 	injector.binder.bind(DbConfig, DbConfig(settings.db_connection_string))
 	adapters = injector.get(Adapters)
 	services = injector.get(Services)
-	result = get_page_content(adapters.http_client, settings.page_url)
 	scrape(settings, adapters, services)
