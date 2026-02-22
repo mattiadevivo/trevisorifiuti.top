@@ -3,7 +3,7 @@ import { Select } from "@ui/select";
 import { Spinner } from "@ui/spinner";
 import {
 	type Component,
-	createEffect,
+	createMemo,
 	createResource,
 	createSignal,
 	For,
@@ -25,9 +25,8 @@ export const RootPage: Component = () => {
 	const { t } = useI18n();
 
 	const [municipalities] = createResource(supabase, getMunicipalities);
-	const [municipalityId, setMunicipalityId] = createSignal<Municipality["id"] | null>(
-		municipalities()?.[0]?.id || null,
-	);
+	const [overrideMunicipalityId, setMunicipalityId] = createSignal<Municipality["id"] | null>(null);
+	const municipalityId = createMemo(() => overrideMunicipalityId() ?? municipalities()?.[0]?.id ?? null);
 	const [collectionSchedules] = createResource(municipalityId, async (municipalityId) => {
 		if (!municipalityId) return [];
 		return await getCollectionSchedulesByMunicipality(supabase, municipalityId);
@@ -36,13 +35,6 @@ export const RootPage: Component = () => {
 	const handleConfigureNotifications = () => {
 		navigate("/account/notifications");
 	};
-
-	createEffect(() => {
-		// Set the first municipality as default when none is selected
-		if (municipalities() && municipalities().length > 0 && !municipalityId()) {
-			setMunicipalityId(municipalities()[0].id);
-		}
-	});
 
 	return (
 		<Suspense fallback={<Spinner />}>

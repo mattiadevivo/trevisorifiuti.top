@@ -3,9 +3,9 @@
 </p>
 
 
-# TVTrash 
+# trevisorifiuti.top 
 
-**TVTrash** is a webapp designed for residents of **Treviso, Italy**. It provides an intuitive interface to discover the official waste collection calendar from the local waste management company, helping you stay organized and eco-friendly.
+**trevisorifiuti.top** is a webapp designed for residents of **Treviso, Italy**. It provides an intuitive interface to discover the official waste collection calendar from the local waste management company, helping you stay organized and eco-friendly.
 
 **Key Features:**
 - 📅 **Waste Collection Calendar:** Instantly check which waste types will be collected on any given day.

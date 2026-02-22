@@ -1,7 +1,7 @@
 import { MetaProvider } from "@solidjs/meta";
 import { Button } from "@ui/button";
-import { Footer } from "@ui/footer";
-import { Navbar } from "@ui/navbar";
+import { Footer } from "../components/layout/footer";
+import { Navbar } from "../components/layout/navbar";
 import { Settings } from "lucide-solid";
 import { type Component, ErrorBoundary, type ParentProps } from "solid-js";
 import { FloatingActionButtons } from "../components/layout/floatingActionButtons";

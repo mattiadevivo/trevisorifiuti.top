@@ -17,7 +17,8 @@ export type Municipality = Database["tvtrash"]["Tables"]["municipalities"]["Row"
 export type CollectionSchedule = Database["tvtrash"]["Tables"]["waste_collections"]["Row"];
 
 export async function getMunicipalities(client: Client) {
-	const { data } = await client.schema("tvtrash").from("municipalities").select();
+	const { data, error } = await client.schema("tvtrash").from("municipalities").select();
+	if (error) throw error;
 	return data;
 }
 
@@ -27,7 +28,7 @@ export async function getCollectionSchedulesByMunicipality(
 	limit: number = 100,
 	offset: number = 0,
 ) {
-	const { data } = await client
+	const { data, error } = await client
 		.schema("tvtrash")
 		.from("waste_collections")
 		.select()
@@ -35,5 +36,6 @@ export async function getCollectionSchedulesByMunicipality(
 		.gte("date", new Date().toLocaleDateString("en-CA"))
 		.range(offset, offset + limit - 1) // (zero-based, inclusive)
 		.order("date", { ascending: true });
+	if (error) throw error;
 	return data;
 }

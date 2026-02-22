@@ -43,11 +43,8 @@ export const Footer: Component = () => {
 					{t("compliance.termsAndConditions.title")}
 				</a>
 			</aside>
-			<aside class="grid-flow-col justify-self-center md:justify-self-end items-center gap-4">
-				{t("footer.madeBy")}{" "}
-				<a href="https://mattiadevivo.dev" target="_blank" rel="noreferrer">
-					Mattia De Vivo
-				</a>
+			<aside class="grid-flow-col justify-self-center md:justify-self-end items-center">
+				<span>{t("footer.madeBy")} <a href="https://mattiadevivo.dev" target="_blank" rel="noreferrer">Mattia De Vivo</a></span>
 			</aside>
 		</footer>
 	);
