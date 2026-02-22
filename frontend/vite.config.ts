@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import path from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import devtools from "solid-devtools/vite";
@@ -101,5 +102,10 @@ export default defineConfig({
 		alias: {
 			"@ui": path.resolve(__dirname, "./src/components/ui"),
 		},
+	},
+	test: {
+		environment: "jsdom",
+		globals: true,
+		setupFiles: ["./test/setup.ts"],
 	},
 });

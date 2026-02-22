@@ -50,6 +50,7 @@ export const Select: ParentComponent<Props> = (props) => {
 				class: props.class,
 			})}
 			required={props.required}
+			disabled={props.disabled}
 			value={props.value}
 			onChange={(e) => {
 				props.onChange(e.currentTarget.value);
