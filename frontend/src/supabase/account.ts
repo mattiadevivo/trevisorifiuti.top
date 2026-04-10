@@ -11,7 +11,22 @@ export async function getNotificationPreferenceByUserId(client: Client, userId: 
 		.schema("tvtrash")
 		.from("notification_preferences")
 		.select()
+		.eq("user_id", userId);
+	if (error) throw error;
+	return data;
+}
+
+export async function getNotificationPreferenceByUserIdAndType(
+	client: Client,
+	userId: User["id"],
+	notificationTypeId: NotificationType["id"],
+) {
+	const { data, error } = await client
+		.schema("tvtrash")
+		.from("notification_preferences")
+		.select()
 		.eq("user_id", userId)
+		.eq("notification_type_id", notificationTypeId)
 		.maybeSingle();
 	if (error) throw error;
 	return data;
@@ -28,6 +43,17 @@ export async function getTelegramNotificationTypeId(client: Client) {
 	return data;
 }
 
+export async function getWebPushNotificationTypeId(client: Client) {
+	const { data, error } = await client
+		.schema("tvtrash")
+		.from("notification_types")
+		.select()
+		.eq("name", "web_push")
+		.maybeSingle();
+	if (error) throw error;
+	return data;
+}
+
 export async function saveNotificationPreference(
 	client: Client,
 	preference: NotificationPreference,
@@ -39,11 +65,16 @@ export async function saveNotificationPreference(
 	if (error) throw error;
 }
 
-export async function deleteNotificationPreference(client: Client, userId: User["id"]) {
+export async function deleteNotificationPreference(
+	client: Client,
+	userId: User["id"],
+	notificationTypeId: NotificationType["id"],
+) {
 	const { error } = await client
 		.schema("tvtrash")
 		.from("notification_preferences")
 		.delete()
-		.eq("user_id", userId);
+		.eq("user_id", userId)
+		.eq("notification_type_id", notificationTypeId);
 	if (error) throw error;
 }

@@ -96,6 +96,16 @@ export const it = {
 			saving: "Salvataggio...",
 			saveSettings: "Salva Impostazioni",
 		},
+		webPush: {
+			title: "Notifiche Push",
+			description: "Ricevi notifiche push direttamente nel browser o sul dispositivo.",
+			enable: "Attiva Notifiche Push",
+			disable: "Disattiva Notifiche Push",
+			permissionDenied: "Le notifiche sono state bloccate. Abilitale nelle impostazioni del browser.",
+			notSupported: "Il tuo browser non supporta le notifiche push.",
+			enabled: "Attive",
+			disabled: "Non attive",
+		},
 	},
 	calendar: {
 		title: "Calendario",
@@ -251,6 +261,16 @@ export const en = {
 			sendTest: "Send Test Message",
 			saving: "Saving...",
 			saveSettings: "Save Settings",
+		},
+		webPush: {
+			title: "Push Notifications",
+			description: "Receive push notifications directly in your browser or on your device.",
+			enable: "Enable Push Notifications",
+			disable: "Disable Push Notifications",
+			permissionDenied: "Notifications are blocked. Enable them in your browser settings.",
+			notSupported: "Your browser does not support push notifications.",
+			enabled: "Enabled",
+			disabled: "Disabled",
 		},
 	},
 	calendar: {
