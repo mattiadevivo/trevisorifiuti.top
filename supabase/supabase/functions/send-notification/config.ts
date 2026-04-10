@@ -8,6 +8,13 @@ const EnvSchema = z.object({
 			error: "TELEGRAM_BOT_TOKEN is required",
 		})
 		.min(1),
+	VAPID_PUBLIC_KEY: z.string({ error: "VAPID_PUBLIC_KEY is required" }).min(1),
+	VAPID_PRIVATE_KEY: z
+		.string({ error: "VAPID_PRIVATE_KEY is required" })
+		.min(1),
+	VAPID_SUBJECT: z
+		.string()
+		.default("mailto:noreply@trevisorifiuti.top"),
 });
 
 export function create() {
@@ -20,6 +27,11 @@ export function create() {
 		},
 		telegram: {
 			botToken: envSchema.TELEGRAM_BOT_TOKEN,
+		},
+		webPush: {
+			vapidPublicKey: envSchema.VAPID_PUBLIC_KEY,
+			vapidPrivateKey: envSchema.VAPID_PRIVATE_KEY,
+			vapidSubject: envSchema.VAPID_SUBJECT,
 		},
 	};
 }

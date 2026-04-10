@@ -11,6 +11,7 @@ import {
 	getSchedulesForDate,
 } from "./adapters/supabase.ts";
 import { create as createTelegram } from "../_shared/adapters/telegram.ts";
+import { create as createWebPush } from "../_shared/adapters/webpush.ts";
 import { create as createConfig } from "./config.ts";
 import { logger } from "../_shared/adapters/logger.ts";
 import { sendNotification } from "./notifications/index.ts";
@@ -32,9 +33,11 @@ Deno.serve(async (req: Request) => {
 		const config = createConfig();
 		const supabase = createSupabase(config.supabase, authorization);
 		const telegramBot = createTelegram(config.telegram);
+		const webPushSender = createWebPush(config.webPush);
 
 		const notificationSenders: NotificationSenders = {
 			telegram: telegramBot,
+			webPush: webPushSender,
 		};
 		const tomorrow = DateTime.now().plus({ days: 1 });
 		logger.info({ date: tomorrow }, "getting collection schedules for date");
