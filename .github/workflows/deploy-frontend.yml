@@ -12,6 +12,7 @@ env:
   VITE_LOGIN_REDIRECT_URL: https://trevisorifiuti.top
   VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
   VITE_SUPABASE_URL: "https://${{ vars.SUPABASE_PROJECT_ID }}.supabase.co"
+  VITE_VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
 
 jobs:
   build-and-deploy:

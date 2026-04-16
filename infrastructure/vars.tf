@@ -24,3 +24,14 @@ variable "supabase_access_token" {
   type        = string
   sensitive   = true
 }
+
+variable "github_token" {
+  description = "GitHub personal access token"
+  type        = string
+  sensitive   = true
+}
+
+variable "vapid_public_key" {
+  description = "VAPID public key for web push notifications"
+  type        = string
+}

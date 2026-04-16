@@ -16,6 +16,10 @@ terraform {
       source  = "render-oss/render"
       version = "1.7.5"
     }
+    github = {
+      source  = "integrations/github"
+      version = "6.11.1"
+    }
   }
 }
 
@@ -26,4 +30,9 @@ provider "supabase" {
 provider "render" {
   api_key  = var.render_api_key
   owner_id = "d396duje5dus73al6dq0" # or set RENDER_OWNER_ID environment variable
+}
+
+provider "github" {
+  token = var.github_token
+  owner = "mattiadevivo"
 }
