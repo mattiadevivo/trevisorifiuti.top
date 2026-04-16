@@ -6,16 +6,6 @@ export type NotificationPreference =
 	Database["tvtrash"]["Tables"]["notification_preferences"]["Row"];
 export type NotificationType = Database["tvtrash"]["Tables"]["notification_types"]["Row"];
 
-export async function getNotificationPreferenceByUserId(client: Client, userId: User["id"]) {
-	const { data, error } = await client
-		.schema("tvtrash")
-		.from("notification_preferences")
-		.select()
-		.eq("user_id", userId);
-	if (error) throw error;
-	return data;
-}
-
 export async function getNotificationPreferenceByUserIdAndType(
 	client: Client,
 	userId: User["id"],

@@ -15,7 +15,6 @@ import {
 	getNotificationPreferenceByUserIdAndType,
 	getTelegramNotificationTypeId,
 	getWebPushNotificationTypeId,
-	type NotificationPreference,
 	saveNotificationPreference,
 } from "../../supabase/account";
 import { useI18n } from "../context/i18n";
@@ -31,27 +30,27 @@ export function AccountPage() {
 	const [telegramNotificationType] = createResource(supabase, getTelegramNotificationTypeId);
 	const [webPushNotificationType] = createResource(supabase, getWebPushNotificationTypeId);
 
-	// Telegram preference
-	const [telegramPreference, { refetch: refetchTelegramPreference }] =
-		createResource<NotificationPreference>(async () => {
-			const user = auth.user();
-			const type = telegramNotificationType();
-			if (user && type) {
-				return await getNotificationPreferenceByUserIdAndType(supabase, user.id, type.id);
-			}
-			return null;
-		});
+	// ource signal ensures re-fetch when user/type resolve
+	const telegramSource = () => {
+		const user = auth.user();
+		const type = telegramNotificationType();
+		return user && type ? { userId: user.id, typeId: type.id } : null;
+	};
+	const [telegramPreference, { refetch: refetchTelegramPreference }] = createResource(
+		telegramSource,
+		(source) => getNotificationPreferenceByUserIdAndType(supabase, source.userId, source.typeId),
+	);
 
 	// Web Push preference
-	const [webPushPreference, { refetch: refetchWebPushPreference }] =
-		createResource<NotificationPreference>(async () => {
-			const user = auth.user();
-			const type = webPushNotificationType();
-			if (user && type) {
-				return await getNotificationPreferenceByUserIdAndType(supabase, user.id, type.id);
-			}
-			return null;
-		});
+	const webPushSource = () => {
+		const user = auth.user();
+		const type = webPushNotificationType();
+		return user && type ? { userId: user.id, typeId: type.id } : null;
+	};
+	const [webPushPreference, { refetch: refetchWebPushPreference }] = createResource(
+		webPushSource,
+		(source) => getNotificationPreferenceByUserIdAndType(supabase, source.userId, source.typeId),
+	);
 
 	// Modal state
 	const [showDeleteModal, setShowDeleteModal] = createSignal(false);

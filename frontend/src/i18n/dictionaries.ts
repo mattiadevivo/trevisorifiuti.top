@@ -36,7 +36,7 @@ export const it = {
 		notificationSettings: "Impostazioni Notifiche",
 		errors: {
 			enterChatId: "Inserisci il tuo ID Chat Telegram",
-			notificationTypeNotFound: "Tipo di notifica Telegram non trovato",
+			notificationTypeNotFound: "Metodo di notifica non trovato",
 			selectMunicipality: "Seleziona un comune",
 			invalidChatId: "Formato ID Chat non valido. Deve essere un numero.",
 			saveProfileError: "Si è verificato un errore durante il salvataggio del profilo",
@@ -203,7 +203,7 @@ export const en = {
 		notificationSettings: "Notification Settings",
 		errors: {
 			enterChatId: "Please enter your Telegram Chat ID",
-			notificationTypeNotFound: "Telegram notification type not found",
+			notificationTypeNotFound: "Notification type not found",
 			selectMunicipality: "Please select a municipality",
 			invalidChatId: "Invalid Chat ID format. It should be a number.",
 			saveProfileError: "An error occurred while saving your profile",
