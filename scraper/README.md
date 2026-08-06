@@ -40,7 +40,7 @@ uv sync
 Run the main scraper script:
 
 ```bash
-uv run main.py
+uv run scrape.py
 ```
 
 ## ⚙️ Configuration
@@ -52,5 +52,5 @@ Example:
 
 ```bash
 export DB_CONNECTION_STRING="postgresql://postgres:postgres@localhost:54322/postgres"
-uv run main.py
+uv run scrape.py
 ```
