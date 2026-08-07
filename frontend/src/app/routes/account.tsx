@@ -2,16 +2,19 @@ import { Button } from "@ui/button";
 import { Spinner } from "@ui/spinner";
 import { createEffect, createMemo, createResource, createSignal, Show, Suspense } from "solid-js";
 import { useAuth } from "../../app/context/auth";
+import { useConfig } from "../../app/context/config";
 import { CurrentSettingsCard } from "../../features/account/components/currentSettingsCard";
 import { InstructionsCard } from "../../features/account/components/instructionsCard";
 import { TelegramNotificationForm } from "../../features/account/components/telegramNotificationForm";
+import { WebPushNotificationForm } from "../../features/account/components/webPushNotificationForm";
 import type { TelegramNotificationInfo } from "../../features/account/schemas/notification";
+import { subscribe, unsubscribe } from "../../features/account/webPush";
 import { getMunicipalities, type Municipality } from "../../supabase";
 import {
 	deleteNotificationPreference,
-	getNotificationPreferenceByUserId,
+	getNotificationPreferenceByUserIdAndType,
 	getTelegramNotificationTypeId,
-	type NotificationPreference,
+	getWebPushNotificationTypeId,
 	saveNotificationPreference,
 } from "../../supabase/account";
 import { useI18n } from "../context/i18n";
@@ -20,22 +23,41 @@ import { useSupabase } from "../context/supabase";
 export function AccountPage() {
 	const supabase = useSupabase();
 	const auth = useAuth();
+	const config = useConfig();
 	const { t } = useI18n();
 
 	const [municipalities] = createResource(supabase, getMunicipalities);
 	const [telegramNotificationType] = createResource(supabase, getTelegramNotificationTypeId);
-	const [notificationPreference, { refetch: refetchNotificationPreference }] =
-		createResource<NotificationPreference>(async () => {
-			if (auth.user()) {
-				return await getNotificationPreferenceByUserId(supabase, auth.user().id);
-			}
-			return null;
-		});
+	const [webPushNotificationType] = createResource(supabase, getWebPushNotificationTypeId);
+
+	// ource signal ensures re-fetch when user/type resolve
+	const telegramSource = () => {
+		const user = auth.user();
+		const type = telegramNotificationType();
+		return user && type ? { userId: user.id, typeId: type.id } : null;
+	};
+	const [telegramPreference, { refetch: refetchTelegramPreference }] = createResource(
+		telegramSource,
+		(source) => getNotificationPreferenceByUserIdAndType(supabase, source.userId, source.typeId),
+	);
+
+	// Web Push preference
+	const webPushSource = () => {
+		const user = auth.user();
+		const type = webPushNotificationType();
+		return user && type ? { userId: user.id, typeId: type.id } : null;
+	};
+	const [webPushPreference, { refetch: refetchWebPushPreference }] = createResource(
+		webPushSource,
+		(source) => getNotificationPreferenceByUserIdAndType(supabase, source.userId, source.typeId),
+	);
+
 	// Modal state
 	const [showDeleteModal, setShowDeleteModal] = createSignal(false);
 	const [isDeleting, setIsDeleting] = createSignal(false);
+	const [deleteTarget, setDeleteTarget] = createSignal<"telegram" | "web_push">("telegram");
 
-	// Form state
+	// Telegram form state
 	const [telegramChatId, setTelegramChatId] = createSignal("");
 	const [selectedMunicipality, setSelectedMunicipality] = createSignal<Municipality["id"] | null>(
 		null,
@@ -45,25 +67,43 @@ export function AccountPage() {
 	const [error, setError] = createSignal("");
 	const [showInstructions, setShowInstructions] = createSignal(false);
 
+	// Web Push form state
+	const [wpSelectedMunicipality, setWpSelectedMunicipality] = createSignal<
+		Municipality["id"] | null
+	>(null);
+	const [wpIsSubmitting, setWpIsSubmitting] = createSignal(false);
+	const [wpSuccess, setWpSuccess] = createSignal("");
+	const [wpError, setWpError] = createSignal("");
+
 	// Memo for config status
-	const isNotificationPreferenceConfigured = createMemo(
+	const isTelegramConfigured = createMemo(
 		() =>
-			notificationPreference() &&
-			notificationPreference()!.municipality_id &&
-			(notificationPreference()!.notification_info as TelegramNotificationInfo).chat_id,
+			telegramPreference() &&
+			telegramPreference()!.municipality_id &&
+			(telegramPreference()!.notification_info as TelegramNotificationInfo).chat_id,
 	);
 
-	// Populate form from resource
+	const isWebPushEnabled = createMemo(() => !!webPushPreference()?.municipality_id);
+
+	// Populate telegram form from resource
 	createEffect(() => {
-		const pref = notificationPreference();
+		const pref = telegramPreference();
 		if (pref) {
 			setTelegramChatId((pref.notification_info as TelegramNotificationInfo).chat_id);
 			setSelectedMunicipality(pref.municipality_id);
 		}
 	});
 
-	// Form submit handler
-	const handleSubmit = async (e: Event) => {
+	// Populate web push form from resource
+	createEffect(() => {
+		const pref = webPushPreference();
+		if (pref) {
+			setWpSelectedMunicipality(pref.municipality_id);
+		}
+	});
+
+	// Telegram form submit handler
+	const handleTelegramSubmit = async (e: Event) => {
 		e.preventDefault();
 		setError("");
 		setSuccess("");
@@ -86,7 +126,7 @@ export function AccountPage() {
 				notification_type_id: telegramNotificationType().id,
 			});
 
-			refetchNotificationPreference();
+			refetchTelegramPreference();
 			setSuccess(t("account.success.profileUpdated"));
 		} catch (err: any) {
 			setError(err.message || t("account.errors.saveProfileError"));
@@ -95,14 +135,76 @@ export function AccountPage() {
 		}
 	};
 
-	// Delete notificationPreference handler
+	// Web Push enable handler
+	const handleWebPushEnable = async (e: Event) => {
+		e.preventDefault();
+		setWpError("");
+		setWpSuccess("");
+		setWpIsSubmitting(true);
+
+		try {
+			if (!wpSelectedMunicipality()) throw new Error(t("account.errors.selectMunicipality"));
+			if (!webPushNotificationType())
+				throw new Error(t("account.errors.notificationTypeNotFound"));
+
+			const subscriptionInfo = await subscribe(config.webPushNotifications.vapidPublicKey);
+			if (!subscriptionInfo) {
+				setWpError(t("account.webPush.permissionDenied"));
+				return;
+			}
+
+			await saveNotificationPreference(supabase, {
+				municipality_id: wpSelectedMunicipality(),
+				user_id: auth.user().id,
+				notification_info: subscriptionInfo,
+				notification_type_id: webPushNotificationType().id,
+			});
+
+			refetchWebPushPreference();
+			setWpSuccess(t("account.success.profileUpdated"));
+		} catch (err: any) {
+			setWpError(err.message || t("account.errors.saveProfileError"));
+		} finally {
+			setWpIsSubmitting(false);
+		}
+	};
+
+	// Web Push disable handler
+	const handleWebPushDisable = async () => {
+		setWpError("");
+		setWpSuccess("");
+		setWpIsSubmitting(true);
+
+		try {
+			await unsubscribe();
+			await deleteNotificationPreference(
+				supabase,
+				auth.user().id,
+				webPushNotificationType().id,
+			);
+			refetchWebPushPreference();
+			setWpSuccess(t("account.success.deleted"));
+		} catch (err: any) {
+			setWpError(err.message || t("account.errors.deleteError"));
+		} finally {
+			setWpIsSubmitting(false);
+		}
+	};
+
+	// Delete handler (for Telegram via modal)
 	const handleDelete = async () => {
 		setIsDeleting(true);
 		setError("");
 		setSuccess("");
 		try {
-			await deleteNotificationPreference(supabase, auth.user().id);
-			refetchNotificationPreference();
+			if (deleteTarget() === "telegram") {
+				await deleteNotificationPreference(
+					supabase,
+					auth.user().id,
+					telegramNotificationType().id,
+				);
+				refetchTelegramPreference();
+			}
 			setSuccess(t("account.success.deleted"));
 			setShowDeleteModal(false);
 		} catch (err: any) {
@@ -125,7 +227,7 @@ export function AccountPage() {
 				</div>
 				<h1 class="text-3xl font-bold mb-8">{t("account.notificationSettings")}</h1>
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<div>
+					<div class="space-y-6">
 						<TelegramNotificationForm
 							municipalities={municipalities()}
 							selectedMunicipality={selectedMunicipality}
@@ -137,16 +239,28 @@ export function AccountPage() {
 							onToggleInstructions={() => setShowInstructions(!showInstructions())}
 							error={error}
 							success={success}
-							onSubmit={handleSubmit}
+							onSubmit={handleTelegramSubmit}
+						/>
+						<WebPushNotificationForm
+							municipalities={municipalities()}
+							selectedMunicipality={wpSelectedMunicipality}
+							onMunicipalityChange={setWpSelectedMunicipality}
+							isSubmitting={wpIsSubmitting}
+							isEnabled={isWebPushEnabled}
+							error={wpError}
+							success={wpSuccess}
+							onEnable={handleWebPushEnable}
+							onDisable={handleWebPushDisable}
 						/>
 					</div>
 					<div>
 						<InstructionsCard show={showInstructions()} />
 						<CurrentSettingsCard
-							isConfigured={!!isNotificationPreferenceConfigured()}
-							notificationPreference={notificationPreference()}
+							isConfigured={!!isTelegramConfigured()}
+							notificationPreference={telegramPreference()}
 							municipalities={municipalities()}
 							onDelete={() => {
+								setDeleteTarget("telegram");
 								setShowDeleteModal(true);
 							}}
 						/>

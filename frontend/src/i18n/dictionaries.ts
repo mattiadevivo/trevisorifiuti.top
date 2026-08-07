@@ -36,7 +36,7 @@ export const it = {
 		notificationSettings: "Impostazioni Notifiche",
 		errors: {
 			enterChatId: "Inserisci il tuo ID Chat Telegram",
-			notificationTypeNotFound: "Tipo di notifica Telegram non trovato",
+			notificationTypeNotFound: "Metodo di notifica non trovato",
 			selectMunicipality: "Seleziona un comune",
 			invalidChatId: "Formato ID Chat non valido. Deve essere un numero.",
 			saveProfileError: "Si è verificato un errore durante il salvataggio del profilo",
@@ -95,6 +95,16 @@ export const it = {
 			sendTest: "Invia Messaggio di Test",
 			saving: "Salvataggio...",
 			saveSettings: "Salva Impostazioni",
+		},
+		webPush: {
+			title: "Notifiche Push",
+			description: "Ricevi notifiche push direttamente nel browser o sul dispositivo.",
+			enable: "Attiva Notifiche Push",
+			disable: "Disattiva Notifiche Push",
+			permissionDenied: "Le notifiche sono state bloccate. Abilitale nelle impostazioni del browser.",
+			notSupported: "Il tuo browser non supporta le notifiche push.",
+			enabled: "Attive",
+			disabled: "Non attive",
 		},
 	},
 	calendar: {
@@ -193,7 +203,7 @@ export const en = {
 		notificationSettings: "Notification Settings",
 		errors: {
 			enterChatId: "Please enter your Telegram Chat ID",
-			notificationTypeNotFound: "Telegram notification type not found",
+			notificationTypeNotFound: "Notification type not found",
 			selectMunicipality: "Please select a municipality",
 			invalidChatId: "Invalid Chat ID format. It should be a number.",
 			saveProfileError: "An error occurred while saving your profile",
@@ -251,6 +261,16 @@ export const en = {
 			sendTest: "Send Test Message",
 			saving: "Saving...",
 			saveSettings: "Save Settings",
+		},
+		webPush: {
+			title: "Push Notifications",
+			description: "Receive push notifications directly in your browser or on your device.",
+			enable: "Enable Push Notifications",
+			disable: "Disable Push Notifications",
+			permissionDenied: "Notifications are blocked. Enable them in your browser settings.",
+			notSupported: "Your browser does not support push notifications.",
+			enabled: "Enabled",
+			disabled: "Disabled",
 		},
 	},
 	calendar: {

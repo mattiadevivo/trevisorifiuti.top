@@ -4,6 +4,7 @@ const EnvSchema = z.object({
 	VITE_SUPABASE_URL: z.string(),
 	VITE_SUPABASE_PUBLISHABLE_DEFAULT_KEY: z.string(),
 	VITE_LOGIN_REDIRECT_URL: z.string(),
+	VITE_VAPID_PUBLIC_KEY: z.string(),
 });
 
 export function create() {
@@ -16,6 +17,9 @@ export function create() {
 		},
 		login: {
 			rediectUrl: envSchema.VITE_LOGIN_REDIRECT_URL,
+		},
+		webPushNotifications: {
+			vapidPublicKey: envSchema.VITE_VAPID_PUBLIC_KEY,
 		},
 	};
 }

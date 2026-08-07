@@ -8,7 +8,7 @@ export const Footer: Component = () => {
 		<footer class="footer sm:footer-horizontal bg-base-100 text-base-content items-center py-4 px-8">
 			<aside class="grid-flow-col items-center justify-self-center md:justify-self-start">
 				<a
-					href="https://github.com/mattiadevivo/TVTrash"
+					href="https://github.com/mattiadevivo/trevisorifiuti.top"
 					target="_blank"
 					rel="noreferrer"
 					class="btn btn-ghost btn-circle btn-sm"

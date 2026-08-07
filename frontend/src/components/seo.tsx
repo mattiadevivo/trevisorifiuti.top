@@ -13,7 +13,7 @@ interface Props {
 export const Seo: Component<Props> = (props) => {
 	const defaultProps = {
 		title:
-			"TVTrash | Rimani aggiornato sul calendario  della raccolta rifiuti Contarina del tuo comune in provincia di Treviso",
+			"trevisorifiuti.top | Rimani aggiornato sul calendario  della raccolta rifiuti Contarina del tuo comune in provincia di Treviso",
 		description:
 			"Consulta il calendario rifiuti Contarina del tuo comune in provincia di Treviso. Attiva le notifiche Telegram per sapere sempre quale bidone esporre il giorno dopo.",
 		image: "/og-image.png",
@@ -63,16 +63,16 @@ export const Seo: Component<Props> = (props) => {
 			<Meta property="og:image" content={merged.image} />
 			<Meta property="og:image:width" content="1200" />
 			<Meta property="og:image:height" content="630" />
-			<Meta property="og:image:alt" content="TvTrash garbage bin" />
+			<Meta property="og:image:alt" content="trevisorifiuti.top garbage bin" />
 			<Meta property="og:url" content={merged.url} />
-			<Meta property="og:site_name" content="TVTrash" />
+			<Meta property="og:site_name" content="trevisorifiuti.top" />
 
 			{/* Twitter */}
 			<Meta name="twitter:card" content="summary_large_image" />
 			<Meta name="twitter:title" content={merged.title} />
 			<Meta name="twitter:description" content={merged.description} />
 			<Meta name="twitter:image" content={merged.image} />
-			<Meta name="twitter:image:alt" content="TvTrash garbage bin" />
+			<Meta name="twitter:image:alt" content="trevisorifiuti.top garbage bin" />
 
 			{/* Canonical */}
 			<Link rel="canonical" href={merged.url} />

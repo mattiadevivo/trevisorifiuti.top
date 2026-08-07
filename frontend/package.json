@@ -29,7 +29,9 @@
 		"vite-plugin-pwa": "^1.2.0",
 		"vite-plugin-sitemap": "^0.8.2",
 		"vite-plugin-solid": "^2.11.6",
-		"vitest": "^3.2.4"
+		"vitest": "^3.2.4",
+		"workbox-precaching": "^7.4.0",
+		"workbox-routing": "^7.4.0"
 	},
 	"dependencies": {
 		"@solid-primitives/i18n": "^2.2.1",

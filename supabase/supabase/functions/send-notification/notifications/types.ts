@@ -1,4 +1,5 @@
 import type { TelegramBot } from "../../_shared/adapters/telegram.ts";
+import type { WebPushSender } from "../../_shared/adapters/webpush.ts";
 import type { Database } from "../../_shared/database.types.ts";
 
 export type GetSchedulesForDateResult =
@@ -8,6 +9,13 @@ export type TelegramNotificationInfo = {
 	chat_id: string;
 };
 
+export type WebPushNotificationInfo = {
+	endpoint: string;
+	p256dh: string;
+	auth: string;
+};
+
 export type NotificationSenders = {
 	telegram: TelegramBot;
+	webPush: WebPushSender;
 };

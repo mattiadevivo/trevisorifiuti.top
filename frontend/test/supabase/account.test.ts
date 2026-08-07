@@ -3,7 +3,9 @@ import type { Client } from "../../src/supabase";
 import {
 	deleteNotificationPreference,
 	getNotificationPreferenceByUserId,
+	getNotificationPreferenceByUserIdAndType,
 	getTelegramNotificationTypeId,
+	getWebPushNotificationTypeId,
 	saveNotificationPreference,
 	type NotificationPreference,
 } from "../../src/supabase/account";
@@ -19,7 +21,22 @@ function selectMaybeSingleClient(result: { data: unknown; error: unknown }) {
 				select: () => ({
 					eq: () => ({
 						maybeSingle: () => Promise.resolve(result),
+						eq: () => ({
+							maybeSingle: () => Promise.resolve(result),
+						}),
 					}),
+				}),
+			}),
+		}),
+	} as unknown as Client;
+}
+
+function selectClient(result: { data: unknown; error: unknown }) {
+	return {
+		schema: () => ({
+			from: () => ({
+				select: () => ({
+					eq: () => Promise.resolve(result),
 				}),
 			}),
 		}),
@@ -41,7 +58,9 @@ function deleteClient(result: { error: unknown }) {
 		schema: () => ({
 			from: () => ({
 				delete: () => ({
-					eq: () => Promise.resolve(result),
+					eq: () => ({
+						eq: () => Promise.resolve(result),
+					}),
 				}),
 			}),
 		}),
@@ -61,18 +80,49 @@ const mockPreference = {
 // ---------------------------------------------------------------------------
 
 describe("getNotificationPreferenceByUserId", () => {
+	it("returns preferences when found", async () => {
+		const client = selectClient({ data: [mockPreference], error: null });
+
+		const result = await getNotificationPreferenceByUserId(client, "user-1");
+
+		expect(result).toEqual([mockPreference]);
+	});
+
+	it("returns empty array when the user has no preferences", async () => {
+		const client = selectClient({ data: [], error: null });
+
+		const result = await getNotificationPreferenceByUserId(client, "user-1");
+
+		expect(result).toEqual([]);
+	});
+
+	it("throws the Supabase error when the query fails", async () => {
+		const supabaseError = { message: "permission denied", code: "42501" };
+		const client = selectClient({ data: null, error: supabaseError });
+
+		await expect(getNotificationPreferenceByUserId(client, "user-1")).rejects.toEqual(
+			supabaseError,
+		);
+	});
+});
+
+// ---------------------------------------------------------------------------
+// getNotificationPreferenceByUserIdAndType
+// ---------------------------------------------------------------------------
+
+describe("getNotificationPreferenceByUserIdAndType", () => {
 	it("returns the preference when found", async () => {
 		const client = selectMaybeSingleClient({ data: mockPreference, error: null });
 
-		const result = await getNotificationPreferenceByUserId(client, "user-1");
+		const result = await getNotificationPreferenceByUserIdAndType(client, "user-1", "type-1");
 
 		expect(result).toEqual(mockPreference);
 	});
 
-	it("returns null when the user has no preference (maybeSingle semantics)", async () => {
+	it("returns null when no preference exists for user and type", async () => {
 		const client = selectMaybeSingleClient({ data: null, error: null });
 
-		const result = await getNotificationPreferenceByUserId(client, "user-1");
+		const result = await getNotificationPreferenceByUserIdAndType(client, "user-1", "type-1");
 
 		expect(result).toBeNull();
 	});
@@ -81,9 +131,9 @@ describe("getNotificationPreferenceByUserId", () => {
 		const supabaseError = { message: "permission denied", code: "42501" };
 		const client = selectMaybeSingleClient({ data: null, error: supabaseError });
 
-		await expect(getNotificationPreferenceByUserId(client, "user-1")).rejects.toEqual(
-			supabaseError,
-		);
+		await expect(
+			getNotificationPreferenceByUserIdAndType(client, "user-1", "type-1"),
+		).rejects.toEqual(supabaseError);
 	});
 });
 
@@ -118,6 +168,36 @@ describe("getTelegramNotificationTypeId", () => {
 });
 
 // ---------------------------------------------------------------------------
+// getWebPushNotificationTypeId
+// ---------------------------------------------------------------------------
+
+describe("getWebPushNotificationTypeId", () => {
+	it("returns the notification type when found", async () => {
+		const notificationType = { id: "type-2", name: "web_push" };
+		const client = selectMaybeSingleClient({ data: notificationType, error: null });
+
+		const result = await getWebPushNotificationTypeId(client);
+
+		expect(result).toEqual(notificationType);
+	});
+
+	it("returns null when no web_push notification type exists", async () => {
+		const client = selectMaybeSingleClient({ data: null, error: null });
+
+		const result = await getWebPushNotificationTypeId(client);
+
+		expect(result).toBeNull();
+	});
+
+	it("throws the Supabase error when the query fails", async () => {
+		const supabaseError = { message: "table not found", code: "42P01" };
+		const client = selectMaybeSingleClient({ data: null, error: supabaseError });
+
+		await expect(getWebPushNotificationTypeId(client)).rejects.toEqual(supabaseError);
+	});
+});
+
+// ---------------------------------------------------------------------------
 // saveNotificationPreference
 // ---------------------------------------------------------------------------
 
@@ -132,7 +212,9 @@ describe("saveNotificationPreference", () => {
 		const supabaseError = { message: "duplicate key value", code: "23505" };
 		const client = upsertClient({ error: supabaseError });
 
-		await expect(saveNotificationPreference(client, mockPreference)).rejects.toEqual(supabaseError);
+		await expect(saveNotificationPreference(client, mockPreference)).rejects.toEqual(
+			supabaseError,
+		);
 	});
 });
 
@@ -144,13 +226,17 @@ describe("deleteNotificationPreference", () => {
 	it("resolves without error on success", async () => {
 		const client = deleteClient({ error: null });
 
-		await expect(deleteNotificationPreference(client, "user-1")).resolves.toBeUndefined();
+		await expect(
+			deleteNotificationPreference(client, "user-1", "type-1"),
+		).resolves.toBeUndefined();
 	});
 
 	it("throws the Supabase error when delete fails", async () => {
 		const supabaseError = { message: "row not found", code: "P0002" };
 		const client = deleteClient({ error: supabaseError });
 
-		await expect(deleteNotificationPreference(client, "user-1")).rejects.toEqual(supabaseError);
+		await expect(deleteNotificationPreference(client, "user-1", "type-1")).rejects.toEqual(
+			supabaseError,
+		);
 	});
 });
