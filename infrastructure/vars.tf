@@ -17,6 +17,7 @@ variable "render_api_key" {
   description = "Render API key"
   type        = string
   sensitive   = true
+  default     = "" # render resources not used anymore
 }
 
 variable "supabase_access_token" {

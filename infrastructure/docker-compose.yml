@@ -1,0 +1,11 @@
+# terraform state backend proxy for Vercel
+services:
+  tfstate:
+    image: mattiadevivo/vercel-blob-tfstate:latest
+    platform: linux/amd64
+    ports:
+      - "8090:8090"
+    environment:
+      HTTP_PORT: "8090"
+      BLOB_READ_WRITE_TOKEN: ${BLOB_READ_WRITE_TOKEN:?set BLOB_READ_WRITE_TOKEN in .env}
+    restart: unless-stopped
