@@ -5,9 +5,9 @@ on:
   push:
     paths:
       - "infrastructure/**"
+      - ".github/workflows/deploy-infrastructure.yml"
 
 env:
-  TF_HTTP_PASSWORD: ${{ secrets.TF_HTTP_PASSWORD }}
   TF_VAR_supabase_access_token: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
   TF_VAR_render_api_key: ${{ secrets.RENDER_API_KEY }}
 
@@ -19,9 +19,32 @@ jobs:
       run:
         working-directory: ./infrastructure
 
+    # Terraform state backend proxy for Vercel.
+    services:
+      tfstate:
+        image: mattiadevivo/vercel-blob-tfstate:latest-redis
+        ports:
+          - 8090:8090
+        env:
+          HTTP_PORT: "8090"
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Wait for state backend
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8090/health > /dev/null; then
+              echo "State backend is up."
+              exit 0
+            fi
+            echo "Waiting for state backend ($i/30)..."
+            sleep 2
+          done
+          echo "State backend did not become healthy in time." >&2
+          exit 1
 
       - name: Setup OpenTofu
         uses: opentofu/setup-opentofu@v1
@@ -33,9 +56,6 @@ jobs:
 
       - name: Tofu Validate
         run: tofu validate
-
-      - name: List files (debug)
-        run: ls -la
 
       - name: Tofu Plan
         id: plan
