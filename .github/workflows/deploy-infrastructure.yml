@@ -21,7 +21,7 @@ jobs:
     # Terraform state backend proxy for Vercel.
     services:
       tfstate:
-        image: mattiadevivo/vercel-blob-tfstate:latest
+        image: mattiadevivo/vercel-blob-tfstate:latest-redis
         ports:
           - 8090:8090
         env:
