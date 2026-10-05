@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "infrastructure/**"
+      - ".github/workflows/deploy-infrastructure.yml"
 
 env:
   TF_VAR_supabase_access_token: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
